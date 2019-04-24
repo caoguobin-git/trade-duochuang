@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Title</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+
+</head>
+<body id="body">
+<table>
+    <tr id="test" data-result="hello">
+        <td>
+            hello
+        </td>
+        <td>
+            hello
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
+<script>
+    $(function () {
+        $("#test").click(test)
+    })
+    function test() {
+        $("#body").data("hello","123")
+        var h=$("#body")
+        // console.log(h.data("hello"))
+        console.log(h.data("hello"))
+        console.log(h.data("result"))
+    }
+</script>
