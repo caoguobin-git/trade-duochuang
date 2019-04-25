@@ -62,7 +62,13 @@
 <button id="getClosedPositions">
     获取已平仓位置
 </button>
-<button id="test">test</button>
+<div id="EURUSD">
+    666
+</div>
+
+<table id="datas">
+
+</table>
 </body>
 </html>
 <script>
@@ -85,137 +91,150 @@
         $("#getOpenPositions").click(getOpenPositions)
         $("#getOpenOrders").click(getOpenOrders)
         $("#getClosedPositions").click(getClosedPositions)
-        $("#test").click(test)
+        $("tr").click(test)
+        $("#EUR\\/USD").click(test)
+        setInterval(getMarketDataSnapshot, 50)
 
     })
 
-
     function test() {
-        var a ="247F1A35FCA49D6443B489951AA1B877";
-        var b=701116547;
-        console.log(a+b)
+        console.log("ok")
+        // var currency=this.id;
+        // console.log(currency)
+        // var price_id=currency+"_PRICE";
+        // console.log(price_id)
+        // console.log($("#"+price_id).innerHTML)
     }
 
     function getMarketDataSnapshot() {
-        var url="/trade/getMarketDataSnapshot.do";
-        var param={
+        var url = "/trade/getMarketDataSnapshot.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547
+            "fxcmAccount": 701116547
         }
-        sendFxcmRequest(url,param)
+        $.ajax({
+            url: url,
+            data: param,
+            type: "post",
+            success: function (result) {
+                doCreatRows(result.data)
+            }
+        })
+
     }
 
     function getClosedPositions() {
-        var url="/trade/getClosedPositions.do"
-        var param={
+        var url = "/trade/getClosedPositions.do"
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547
+            "fxcmAccount": 701116547
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function getOpenOrders() {
-        var url="/trade/getOpenOrders.do";
-        var param={
+        var url = "/trade/getOpenOrders.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547
+            "fxcmAccount": 701116547
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function getOpenPositions() {
-        var url="/trade/getOpenPositions.do"
-        var param={
+        var url = "/trade/getOpenPositions.do"
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547
+            "fxcmAccount": 701116547
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function deleteSLEntryOrder() {
-        var url="/trade/deleteSLEntryOrder.do";
-        var param={
+        var url = "/trade/deleteSLEntryOrder.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547,
-            "orderId":104563467,
-            "type":"limit"
+            "fxcmAccount": 701116547,
+            "orderId": 104563467,
+            "type": "limit"
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function updateSLEntryOrder() {
-        var url="/trade/updateSLEntryOrder.do";
-        var param={
+        var url = "/trade/updateSLEntryOrder.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547,
-            "orderId":104563467,
-            "type":"limit",
-            "price":1.15
+            "fxcmAccount": 701116547,
+            "orderId": 104563467,
+            "type": "limit",
+            "price": 1.15
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function createSLEntryOrder() {
-        var url="/trade/createSLEntryOrder.do";
-        var param={
+        var url = "/trade/createSLEntryOrder.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547,
-            "orderId":104563452,
-            "type":"stop",
-            "price":0.95
+            "fxcmAccount": 701116547,
+            "orderId": 104563452,
+            "type": "stop",
+            "price": 0.95
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function deleteAllEntryOrders() {
-        var url="/trade/deleteAllEntryOrders.do";
-        var param={
+        var url = "/trade/deleteAllEntryOrders.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547
+            "fxcmAccount": 701116547
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function deleteEntryOrder() {
-        var url="/trade/deleteEntryOrder.do";
-        var param={
+        var url = "/trade/deleteEntryOrder.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547,
-            "orderId":104562911
+            "fxcmAccount": 701116547,
+            "orderId": 104562911
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
+
     function updateEntryOrder() {
-        var url="/trade/updateEntryOrder.do";
-        var param={
+        var url = "/trade/updateEntryOrder.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547,
-            "orderId":104562911,
-            "amount":1000,
-            "price":1.05,
+            "fxcmAccount": 701116547,
+            "orderId": 104562911,
+            "amount": 1000,
+            "price": 1.05,
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function deleteMarketOrder() {
-        var url="/trade/deleteMarketOrder.do";
-        var param={
+        var url = "/trade/deleteMarketOrder.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount":701116547,
-            "fxcmPosID":63825945
+            "fxcmAccount": 701116547,
+            "fxcmPosID": 63825945
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function deleteSLMarketOrder() {
-        var url="/trade/deleteSLMarketOrder.do";
-        var param={
+        var url = "/trade/deleteSLMarketOrder.do";
+        var param = {
             "userToken": "247F1A35FCA49D6443B489951AA1B877",
             "fxcmAccount": 701116547,
             "orderId": 104560731,
             "type": "limit"
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function updateSLMarketOrder() {
@@ -227,7 +246,7 @@
             "type": "limit",
             "price": 1.03
         }
-        sendFxcmRequest(url,param)
+        sendFxcmRequest(url, param)
     }
 
     function createSLMarketOrder() {
@@ -304,5 +323,22 @@
             }
         })
 
+    }
+
+
+    function doCreatRows(resultMap) {
+        // console.log(resultMap.marketDataSnapshot)
+        $("#datas").empty()
+        $.each(resultMap.marketDataSnapshot, function (key, item) {
+            var tr = $("<tr id='" + key + "'>" +
+                "<td>" + key + "</td>" +
+                "<td>" + item.bidClose + "</td>" +
+                "<td>" + item.askClose + "</td>" +
+                "<td>" + item.low + "</td>" +
+                "<td>" + item.high + "</td>" +
+                "</tr>")
+            var table = $("#datas")
+            table.append(tr)
+        })
     }
 </script>
