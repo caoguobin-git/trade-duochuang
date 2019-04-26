@@ -1,5 +1,10 @@
 package com.duochuang.service;
 
+import com.duochuang.entity.OpenPositionEntity;
+import com.fxcm.fix.pretrade.MarketDataSnapshot;
+
+import java.util.Map;
+
 /***********************************************
  * File Name: TradeService
  * Author: caoguobin
@@ -11,47 +16,47 @@ package com.duochuang.service;
 
 public interface TradeService {
 
-    String loginFXCM(String userId, String fxcmAccount, String fxcmPassword);
+    String loginFXCM();
 
-    String createMarketOrder(String userId, String fxcmAccount, String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit);
+    String createMarketOrder( String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit);
 
-    String createSLMarketOrder(String userId, String fxcmAccount, String fxcmPosId, String type, String price);
+    String createSLMarketOrder( String fxcmPosId, String type, String price);
 
-    String updateSLMarketOrder(String userId, String fxcmAccount, String orderId, String type, String price);
+    String updateSLMarketOrder(String orderId, String type, String price);
 
-    String deleteSLMarketOrder(String userId, String fxcmAccount, String orderId, String type);
+    String deleteSLMarketOrder(String orderId, String type);
 
-    String deleteMarketOrder(String userId, String fxcmAccount, String fxcmPosID);
+    String deleteMarketOrder( String fxcmPosID);
 
-    String deleteAllOpenPositions(String userId, String fxcmAccount);
+    String deleteAllOpenPositions();
 
-    String createEntryOrder(String userId, String fxcmAccount, String price, String type, String amount, String side, String currency, String stop, String limit);
+    String createEntryOrder(String price, String type, String amount, String side, String currency, String stop, String limit);
 
-    String updateEntryOrder(String userId, String fxcmAccount, String orderId, String amount, String price);
+    String updateEntryOrder(String orderId, String amount, String price);
 
-    String deleteEntryOrder(String userId, String fxcmAccount, String orderId);
+    String deleteEntryOrder(String orderId);
 
-    String deleteAllEntryOrders(String userId, String fxcmAccount);
+    String deleteAllEntryOrders();
 
-    String createSLEntryOrder(String userId, String fxcmAccount, String orderId, String price, String type);
+    String createSLEntryOrder( String orderId, String price, String type);
 
-    String updateSLEntryOrder(String userId, String fxcmAccount, String orderId, String type, String price);
+    String updateSLEntryOrder(String orderId, String type, String price);
 
-    String deleteSLEntryOrder(String userId, String fxcmAccount, String orderId, String type);
+    String deleteSLEntryOrder( String orderId, String type);
 
-    String changeFXCMPassword(String userId, String fxcmAccount, String password, String newPassword);
+    String changeFXCMPassword(String password, String newPassword);
 
-    String logoutFXCM(String userId, String fxcmAccount);
+    String logoutFXCM();
 
-    String getOpenPositions(String userId, String fxcmAccount);
+    Map<String, Map<String, OpenPositionEntity>> getOpenPositions();
 
-    String getOpenOrders(String userId, String fxcmAccount);
+    String getOpenOrders();
 
-    String getClosedPositions(String userId, String fxcmAccount);
+    String getClosedPositions();
 
-    String getCollateralReport(String userId, String fxcmAccount);
+    String getCollateralReport();
 
-    String getOrderExecutionReport(String userId, String fxcmAccount, String listId);
+    String getOrderExecutionReport(String listId);
 
-    String getMarketDataSnapshot(String userId, String fxcmAccount);
+    Map<String, MarketDataSnapshot> getMarketDataSnapshot();
 }

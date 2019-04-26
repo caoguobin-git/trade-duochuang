@@ -8,9 +8,12 @@
 package com.duochuang.controller;
 
 
+import com.duochuang.entity.OpenPositionEntity;
 import com.duochuang.service.TradeService;
 import com.duochuang.vo.JsonResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fxcm.fix.pretrade.MarketDataSnapshot;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,17 +48,12 @@ public class TradeController {
     }
 
     /**
-     * 登录福汇账号
-     *
-     * @param userToken    userToken
-     * @param fxcmAccount  福汇账号
-     * @param fxcmPassword 福汇密码
+     * 登录福汇账
      */
     @RequestMapping(value = "/loginFXCM", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult loginFXCM(String userToken, String fxcmAccount, String fxcmPassword) {
-        String userId = userToken;
-        String loginResult = tradeService.loginFXCM(userId, fxcmAccount, fxcmPassword);
+    public JsonResult loginFXCM() {
+        String loginResult = tradeService.loginFXCM();
         if ("OK".equalsIgnoreCase(loginResult)) {
             return new JsonResult(loginResult);
         } else {
@@ -63,10 +63,20 @@ public class TradeController {
 
     @RequestMapping("/getMarketDataSnapshot")
     @ResponseBody
-    public JsonResult getMarketDataSnapshot(String userToken,String fxcmAccount){
-        String userId=userToken;
-        String marketDatas = tradeService.getMarketDataSnapshot(userId,fxcmAccount);
-        return getJsonResult(marketDatas);
+    public String getMarketDataSnapshot(HttpServletRequest request, HttpServletResponse response)    {
+        String callback = request.getParameter("callback");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        Map<String, MarketDataSnapshot> marketDatas = tradeService.getMarketDataSnapshot();
+        if (marketDatas==null){
+            return null;
+        }
+        String result=null;
+        try {
+            result=objectMapper.writeValueAsString(marketDatas);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return callback+"("+result+")";
     }
 
     private JsonResult getJsonResult(String marketDatas) {
@@ -99,7 +109,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.createMarketOrder(userId, fxcmAccount, currency, tradeSide, tradeAmount, tradeStop, tradeLimit);
+        String result = tradeService.createMarketOrder(currency, tradeSide, tradeAmount, tradeStop, tradeLimit);
 
         return new JsonResult(result);
 
@@ -120,7 +130,7 @@ public class TradeController {
             return new JsonResult("401", "wrong params", null);
         }
         String userId = userToken;
-        String result = tradeService.createSLMarketOrder(userId, fxcmAccount, fxcmPosId, type, price);
+        String result = tradeService.createSLMarketOrder(fxcmPosId, type, price);
         //TODO
         return new JsonResult(result);
     }
@@ -142,7 +152,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.updateSLMarketOrder(userId, fxcmAccount, orderId, type, price);
+        String result = tradeService.updateSLMarketOrder( orderId, type, price);
         return new JsonResult(result);
     }
 
@@ -158,7 +168,7 @@ public class TradeController {
     public JsonResult deleteStopLimitMarketOrder(String userToken, String fxcmAccount, String orderId, String type) {
         String userId = userToken;
 
-        String result = tradeService.deleteSLMarketOrder(userId, fxcmAccount, orderId, type);
+        String result = tradeService.deleteSLMarketOrder( orderId, type);
         return new JsonResult(result);
     }
 
@@ -173,7 +183,7 @@ public class TradeController {
     public JsonResult deleteTrueMarketOrder(String userToken, String fxcmAccount, String fxcmPosID) {
         String userId = userToken;
 
-        String result = tradeService.deleteMarketOrder(userId, fxcmAccount, fxcmPosID);
+        String result = tradeService.deleteMarketOrder( fxcmPosID);
         return new JsonResult(result);
     }
 
@@ -187,7 +197,7 @@ public class TradeController {
     public JsonResult deleteAllOpenPositions(String userToken, String fxcmAccount) {
         String userId = userToken;
 
-        String result = tradeService.deleteAllOpenPositions(userId, fxcmAccount);
+        String result = tradeService.deleteAllOpenPositions();
         return new JsonResult(result);
 
     }
@@ -213,7 +223,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.createEntryOrder(userId, fxcmAccount, price, type, amount, side, currency, stop, limit);
+        String result = tradeService.createEntryOrder( price, type, amount, side, currency, stop, limit);
         return new JsonResult(result);
     }
 
@@ -232,7 +242,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.updateEntryOrder(userId, fxcmAccount, orderId, amount, price);
+        String result = tradeService.updateEntryOrder( orderId, amount, price);
         return new JsonResult(result);
     }
 
@@ -247,7 +257,7 @@ public class TradeController {
     public JsonResult deleteEntryOrder(String userToken, String fxcmAccount, String orderId) {
         String userId = userToken;
 
-        String result = tradeService.deleteEntryOrder(userId, fxcmAccount, orderId);
+        String result = tradeService.deleteEntryOrder( orderId);
         return new JsonResult(result);
     }
 
@@ -261,7 +271,7 @@ public class TradeController {
     public JsonResult deleteAllEntryOrders(String userToken, String fxcmAccount) {
         String userId = userToken;
 
-        String result = tradeService.deleteAllEntryOrders(userId, fxcmAccount);
+        String result = tradeService.deleteAllEntryOrders();
         return new JsonResult(result);
     }
 
@@ -281,7 +291,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.createSLEntryOrder(userId, fxcmAccount, orderId, price, type);
+        String result = tradeService.createSLEntryOrder( orderId, price, type);
         return new JsonResult(result);
     }
 
@@ -300,7 +310,7 @@ public class TradeController {
             return new JsonResult("401", "wrong params", null);
         }
         String userId = userToken;
-        String result = tradeService.updateSLEntryOrder(userId, fxcmAccount, orderId, type, price);
+        String result = tradeService.updateSLEntryOrder( orderId, type, price);
         return new JsonResult(result);
     }
 
@@ -315,7 +325,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult deleteSLEntryOrder(String userToken, String fxcmAccount, String orderId, String type) {
         String userId = userToken;
-        String result = tradeService.deleteSLEntryOrder(userId, fxcmAccount, orderId, type);
+        String result = tradeService.deleteSLEntryOrder( orderId, type);
         return new JsonResult(result);
     }
 
@@ -332,7 +342,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult changePassword(String userToken, String fxcmAccount, String password, String newPassword) {
         String userId = userToken;
-        String result = tradeService.changeFXCMPassword(userId, fxcmAccount, password, newPassword);
+        String result = tradeService.changeFXCMPassword( password, newPassword);
         return new JsonResult(result);
     }
 
@@ -348,8 +358,8 @@ public class TradeController {
     @ResponseBody
     public JsonResult getOpenPositions(String userToken, String fxcmAccount) {
         String userId = userToken;
-        String result = tradeService.getOpenPositions(userId, fxcmAccount);
-        return getJsonResult(result);
+        Map<String, Map<String, OpenPositionEntity>> result = tradeService.getOpenPositions();
+        return  new JsonResult(result);
     }
 
     /**
@@ -363,7 +373,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult getOpenOrders(String userToken, String fxcmAccount) {
         String userId = userToken;
-        String result = tradeService.getOpenOrders(userId, fxcmAccount);
+        String result = tradeService.getOpenOrders();
         return getJsonResult(result);
     }
 
@@ -378,7 +388,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult getClosedPositions(String userToken, String fxcmAccount) {
         String userId = userToken;
-        String result = tradeService.getClosedPositions(userId, fxcmAccount);
+        String result = tradeService.getClosedPositions();
         return getJsonResult(result);
     }
 
@@ -393,7 +403,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult getCollateralReport(String userToken, String fxcmAccount) {
         String userId = userToken;
-        String result = tradeService.getCollateralReport(userId, fxcmAccount);
+        String result = tradeService.getCollateralReport();
         return getJsonResult(result);
     }
 
@@ -409,7 +419,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult logoutFXCM(String userToken, String fxcmAccount) {
         String userId = userToken;
-        String result = tradeService.logoutFXCM(userId, fxcmAccount);
+        String result = tradeService.logoutFXCM();
         return new JsonResult(result);
     }
 
@@ -457,7 +467,7 @@ public class TradeController {
     @RequestMapping(value = "/getOrderExecutionReport")
     @ResponseBody
     public JsonResult getOrderExecutionReport(String userToken, String fxcmAccount, String listId) {
-        String orderExecutionReport = tradeService.getOrderExecutionReport(userToken, fxcmAccount, listId);
+        String orderExecutionReport = tradeService.getOrderExecutionReport( listId);
         if (Strings.isNullOrEmpty(orderExecutionReport)) {
             return new JsonResult(null);
         }

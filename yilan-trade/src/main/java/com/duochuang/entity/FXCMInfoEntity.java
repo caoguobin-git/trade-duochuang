@@ -25,6 +25,12 @@ public class FXCMInfoEntity extends EntityBase {
     public FXCMInfoEntity() {
     }
 
+    public FXCMInfoEntity(String fxcmAccount, String fxcmPassword, String accountType, String hostAddr) {
+        this.fxcmAccount = fxcmAccount;
+        this.fxcmPassword = fxcmPassword;
+        this.accountType = accountType;
+        this.hostAddr = hostAddr;
+    }
 
     public FXCMInfoEntity(String userId, String fxcmAccount, String fxcmPassword, boolean followType, double followParam, String accountType, String hostAddr, boolean deleteStatus) {
         this.userId = userId;
