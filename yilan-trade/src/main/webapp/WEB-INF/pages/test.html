@@ -8,28 +8,18 @@
 
 </head>
 <body id="body">
-<table>
-    <tr id="test" data-result="hello">
-        <td>
-            hello
-        </td>
-        <td>
-            hello
-        </td>
-    </tr>
-</table>
 
+<div id="datas"></div>
+<button id="test">dianji</button>
 </body>
 </html>
 <script>
     $(function () {
+        $("#datas").data("h","hell2222o")
         $("#test").click(test)
     })
     function test() {
-        $("#body").data("hello","123")
-        var h=$("#body")
-        // console.log(h.data("hello"))
-        console.log(h.data("hello"))
-        console.log(h.data("result"))
+        var a =$("#datas").data("h");
+        console.log(a)
     }
 </script>

@@ -5,7 +5,6 @@
     <title>
         Title</title>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-
 </head>
 <body>
 <button id="loginFXCM">
@@ -93,31 +92,21 @@
         $("#getClosedPositions").click(getClosedPositions)
         $("tr").click(test)
         $("#EUR\\/USD").click(test)
-        setInterval(getMarketDataSnapshot, 50)
-
+        setInterval(getMarketDataSnapshot, 500)
     })
 
     function test() {
         console.log("ok")
-        // var currency=this.id;
-        // console.log(currency)
-        // var price_id=currency+"_PRICE";
-        // console.log(price_id)
-        // console.log($("#"+price_id).innerHTML)
     }
 
     function getMarketDataSnapshot() {
         var url = "/trade/getMarketDataSnapshot.do";
-        var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547
-        }
         $.ajax({
             url: url,
-            data: param,
-            type: "post",
+            dataType:"jsonP",
+            type: "get",
             success: function (result) {
-                doCreatRows(result.data)
+                doCreatRows(result)
             }
         })
 
@@ -327,9 +316,9 @@
 
 
     function doCreatRows(resultMap) {
-        // console.log(resultMap.marketDataSnapshot)
+        // console.log(resultMap)
         $("#datas").empty()
-        $.each(resultMap.marketDataSnapshot, function (key, item) {
+        $.each(resultMap, function (key, item) {
             var tr = $("<tr id='" + key + "'>" +
                 "<td>" + key + "</td>" +
                 "<td>" + item.bidClose + "</td>" +

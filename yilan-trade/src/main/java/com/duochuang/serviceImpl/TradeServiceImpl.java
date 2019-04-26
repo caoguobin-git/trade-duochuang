@@ -124,6 +124,9 @@ public class TradeServiceImpl implements TradeService {
 
     @Override
     public String deleteAllOpenPositions() {
+        if (tradeThreadList.size()==0){
+            return null;
+        }
         TradeThread tradeThread = tradeThreadList.get(0);
 
         List<String> secondary = tradeThread.deleteAllOpenPositions();
