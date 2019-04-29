@@ -11,6 +11,7 @@ import com.duochuang.common.TradeThread;
 import com.duochuang.entity.FXCMInfoEntity;
 import com.duochuang.entity.OpenPositionEntity;
 import com.duochuang.entity.OrderEntity;
+import com.duochuang.mapper.TradeMapper;
 import com.duochuang.service.TradeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,18 +19,23 @@ import com.fxcm.fix.posttrade.ClosedPositionReport;
 import com.fxcm.fix.posttrade.CollateralReport;
 import com.fxcm.fix.pretrade.MarketDataSnapshot;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
 @Service
 public class TradeServiceImpl implements TradeService {
 
+    @Autowired
+    private TradeMapper tradeMapper;
+
     private ObjectMapper objectMapper = new ObjectMapper();
     Logger logger = Logger.getLogger(TradeServiceImpl.class);
     List<TradeThread> tradeThreadList = new LinkedList<>();
+    List<String> accountList = new LinkedList<>();
 
 
     /**
@@ -44,19 +50,37 @@ public class TradeServiceImpl implements TradeService {
      */
     @Override
     public String loginFXCM() {
-        File file = new File("D:\\sources\\trade-duochuang\\yilan-trade\\src\\main\\resources\\accounts.txt");
-        try {
-            InputStream inputStream = new FileInputStream(file);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String a = null;
-            while ((a = bufferedReader.readLine()) != null) {
-                String[] split = a.split("&");
-                TradeThread tradeThread = new TradeThread(new FXCMInfoEntity(split[0].trim(), split[1].trim(), split[2].trim(), split[3].trim()));
-                tradeThreadList.add(tradeThread);
-                new Thread(tradeThread).start();
+//        File file = new File("D:\\sources\\trade-duochuang\\yilan-trade\\src\\main\\resources\\accounts.txt");
+//        try {
+//            InputStream inputStream = new FileInputStream(file);
+//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+//            String a = null;
+//            while ((a = bufferedReader.readLine()) != null) {
+//                String[] split = a.split("&");
+//                TradeThread tradeThread = new TradeThread(new FXCMInfoEntity(split[0].trim(), split[1].trim(), split[2].trim(), split[3].trim()));
+//                tradeThreadList.add(tradeThread);
+//                new Thread(tradeThread).start();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        FXCMInfoEntity trader = tradeMapper.findTrader();
+        if (!accountList.contains(trader.getFxcmAccount())) {
+            TradeThread traderThread = new TradeThread(trader);
+            new Thread(traderThread).start();
+            tradeThreadList.add(traderThread);
+            accountList.add(trader.getFxcmAccount());
+        }
+        List<FXCMInfoEntity> followerList = tradeMapper.findFollower();
+        if (followerList != null && followerList.size() > 0) {
+            for (FXCMInfoEntity fxcmInfoEntity : followerList) {
+                if (!accountList.contains(fxcmInfoEntity.getFxcmAccount())) {
+                    TradeThread followerThread = new TradeThread(fxcmInfoEntity);
+                    new Thread(followerThread).start();
+                    tradeThreadList.add(followerThread);
+                    accountList.add(fxcmInfoEntity.getFxcmAccount());
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return "OK";
     }
@@ -65,11 +89,13 @@ public class TradeServiceImpl implements TradeService {
     public String createMarketOrder(String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit) {
         TradeThread traderThread = tradeThreadList.get(0);
         String secondary = traderThread.getFxcmInfoEntity().getFxcmAccount() + new Date().getTime();
-        String trueMarketOrder = traderThread.createTrueMarketOrder(currency, tradeSide, tradeAmount, tradeStop, tradeLimit, secondary);
+        double cashOutstanding = traderThread.getCollateralReport().getCashOutstanding();
+        String trueMarketOrder = traderThread.createTrueMarketOrder(cashOutstanding,currency, tradeSide, tradeAmount, tradeStop, tradeLimit, secondary);
+
 
         for (int i = 1; i < tradeThreadList.size(); i++) {
             TradeThread tradeThread = tradeThreadList.get(i);
-            tradeThread.createTrueMarketOrder(currency, tradeSide, tradeAmount, tradeStop, tradeLimit, secondary);
+            tradeThread.createTrueMarketOrder(cashOutstanding,currency, tradeSide, tradeAmount, tradeStop, tradeLimit, secondary);
 
         }
         return trueMarketOrder;
@@ -124,7 +150,7 @@ public class TradeServiceImpl implements TradeService {
 
     @Override
     public String deleteAllOpenPositions() {
-        if (tradeThreadList.size()==0){
+        if (tradeThreadList.size() == 0) {
             return null;
         }
         TradeThread tradeThread = tradeThreadList.get(0);
@@ -234,7 +260,7 @@ public class TradeServiceImpl implements TradeService {
 
     @Override
     public Map<String, Map<String, OpenPositionEntity>> getOpenPositions() {
-        Map<String,Map<String,OpenPositionEntity>> openPositionMap=new HashMap<>();
+        Map<String, Map<String, OpenPositionEntity>> openPositionMap = new LinkedHashMap<>();
         for (TradeThread tradeThread : tradeThreadList) {
             openPositionMap.put(tradeThread.getFxcmInfoEntity().getFxcmAccount(), tradeThread.getOpenPositionsMap());
         }
@@ -242,48 +268,24 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public String getOpenOrders() {
-        TradeThread tradeThread = tradeThreadList.get(0);
+    public Map<String, Map<String, OrderEntity>> getOpenOrders() {
 
-        if (tradeThread == null) {
-            Map map = new HashMap();
-            map.put("message", "登录状态异常，请重新登录");
-            try {
-                return objectMapper.writeValueAsString(map);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+       Map<String,Map<String, OrderEntity>> openOrderMap = new LinkedHashMap<>();
+        for (TradeThread thread : tradeThreadList) {
+            openOrderMap.put(thread.getFxcmInfoEntity().getFxcmAccount(),thread.getOpenOrderMap());
+
         }
-        Map<String, OrderEntity> openOrderMap = tradeThread.getOpenOrderMap();
-        String result = null;
-        try {
-            result = objectMapper.writeValueAsString(openOrderMap);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return openOrderMap;
     }
 
     @Override
-    public String getClosedPositions() {
-        TradeThread tradeThread = tradeThreadList.get(0);
-        if (tradeThread == null) {
-            Map map = new HashMap();
-            map.put("message", "登录状态异常，请重新登录");
-            try {
-                return objectMapper.writeValueAsString(map);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+    public Map<String, Map<String, ClosedPositionReport>> getClosedPositions() {
+
+        Map<String,Map<String, ClosedPositionReport>> closedPositions = new LinkedHashMap<>();
+        for (TradeThread tradeThread : tradeThreadList) {
+            closedPositions.put(tradeThread.getFxcmInfoEntity().getFxcmAccount(), tradeThread.getClosedPositionsMap());
         }
-        Map<String, ClosedPositionReport> openOrderMap = tradeThread.getClosedPositionsMap();
-        String result = null;
-        try {
-            result = objectMapper.writeValueAsString(openOrderMap);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return closedPositions;
     }
 
     @Override
@@ -320,7 +322,7 @@ public class TradeServiceImpl implements TradeService {
 
     @Override
     public Map<String, MarketDataSnapshot> getMarketDataSnapshot() {
-        if (tradeThreadList.size()==0){
+        if (tradeThreadList.size() == 0) {
             return null;
         }
         TradeThread tradeThread = tradeThreadList.get(0);

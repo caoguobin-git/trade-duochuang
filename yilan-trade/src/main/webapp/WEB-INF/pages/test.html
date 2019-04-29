@@ -7,19 +7,19 @@
     <script src="http://code.jquery.com/jquery-latest.js"></script>
 
 </head>
-<body id="body">
-
-<div id="datas"></div>
+<body>
+<div class="datas" id=""><div class="sell_price"></div><div class="buy_price"></div><div class="spread"></div><div class="high_price"></div><div class="low_price"></div><div class="time"></div></div></div>
+<div id="EUR/USD"> <div class="spread">test1111</div></div>
 <button id="test">dianji</button>
 </body>
 </html>
 <script>
     $(function () {
-        $("#datas").data("h","hell2222o")
-        $("#test").click(test)
+        $("#test").click(test);
     })
+
     function test() {
-        var a =$("#datas").data("h");
-        console.log(a)
+        console.log($("#datas .spread").html())
     }
+
 </script>

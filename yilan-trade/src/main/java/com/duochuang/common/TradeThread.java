@@ -170,7 +170,7 @@ public class TradeThread implements Runnable {
                     //订单执行失败，推送失败原因
                     if (executionReport.getFXCMOrdStatus().getCode().equalsIgnoreCase("R")) {
 
-                        if (!failedOrder.contains(executionReport.getListID()) && !"Limit".equalsIgnoreCase(executionReport.getOrdType().getDesc()) && !"stop".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
+                        if (failedOrder != null && !failedOrder.contains(executionReport.getListID()) && !"Limit".equalsIgnoreCase(executionReport.getOrdType().getDesc()) && !"stop".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
                             failedOrder.add(executionReport.getListID());
                             String reject = null;
                             try {
@@ -276,7 +276,7 @@ public class TradeThread implements Runnable {
                                 }
                             }
                         } else {
-                            if (!Strings.isNullOrEmpty(String.valueOf(executionReport.getFXCMOrdType()))&&"S".equalsIgnoreCase(executionReport.getFXCMOrdType().getCode())) {
+                            if (!Strings.isNullOrEmpty(String.valueOf(executionReport.getFXCMOrdType())) && "S".equalsIgnoreCase(executionReport.getFXCMOrdType().getCode())) {
                                 if (((executionReport.getFXCMOrdStatus().getCode().equalsIgnoreCase("0") || "5".equalsIgnoreCase(executionReport.getFXCMOrdStatus().getCode()) || "w".equalsIgnoreCase(executionReport.getFXCMOrdStatus().getCode())))) {
                                     OpenPositionEntity openPositionEntity = openPositionsMap.get(executionReport.getFXCMPosID());
                                     if (openPositionEntity == null) {
@@ -291,7 +291,7 @@ public class TradeThread implements Runnable {
                                         openPositionsMap.get(executionReport.getFXCMPosID()).setStop(null);
                                     }
                                 }
-                            } else if (!Strings.isNullOrEmpty(String.valueOf(executionReport.getFXCMOrdType()))&&"L".equalsIgnoreCase(executionReport.getFXCMOrdType().getCode())) {
+                            } else if (!Strings.isNullOrEmpty(String.valueOf(executionReport.getFXCMOrdType())) && "L".equalsIgnoreCase(executionReport.getFXCMOrdType().getCode())) {
                                 if (((executionReport.getFXCMOrdStatus().getCode().equalsIgnoreCase("0") || "5".equalsIgnoreCase(executionReport.getFXCMOrdStatus().getCode()) || "w".equalsIgnoreCase(executionReport.getFXCMOrdStatus().getCode())))) {
                                     OpenPositionEntity openPositionEntity = openPositionsMap.get(executionReport.getFXCMPosID());
                                     if (openPositionEntity == null) {
@@ -372,7 +372,7 @@ public class TradeThread implements Runnable {
             System.out.println("fxcmPassword: " + fxcmInfoEntity.getFxcmPassword());
             System.out.println("fxcmAccountType: " + fxcmInfoEntity.getAccountType());
             System.out.println("fxcmHostAddress: " + fxcmInfoEntity.getHostAddr());
-
+            System.out.println("properties:" + properties.toString());
             iGateway.login(properties);
             iGateway.requestTradingSessionStatus();
             iGateway.requestAccounts();
@@ -441,10 +441,17 @@ public class TradeThread implements Runnable {
      * @param secondary   secondaryId
      * @return 查询id
      */
-    public String createTrueMarketOrder(String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit, String secondary) {
+    public String createTrueMarketOrder(double cashOutStanding, String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit, String secondary) {
         double amount = Double.parseDouble(tradeAmount);
         double stop = Double.parseDouble(tradeStop);
         double limit = Double.parseDouble(tradeLimit);
+
+
+        amount = getAmount(cashOutStanding, amount);
+        if (amount<=0){
+            return null;
+        }
+
         ISide side = null;
         ISide slSide = null;
 
@@ -506,6 +513,14 @@ public class TradeThread implements Runnable {
         }
 
         return createTrueMarketOrderID;
+    }
+
+    //对跟单进行取值操作
+    private double getAmount(double cashOutStanding, double amount) {
+        double a = cashOutStanding;
+        double b = collateralReport.getCashOutstanding();
+        double mAmount = Math.floor(b / a * amount / 1000) * 1000;
+        return mAmount;
     }
 
     /**

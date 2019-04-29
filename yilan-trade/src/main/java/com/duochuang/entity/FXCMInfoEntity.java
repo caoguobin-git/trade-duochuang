@@ -9,18 +9,12 @@ package com.duochuang.entity;
 
 import com.duochuang.common.EntityBase;
 
-public class FXCMInfoEntity extends EntityBase {
-    private String userId;
-    private boolean accountRole;
+public class FXCMInfoEntity {
     private String fxcmAccount;
     private String fxcmPassword;
-    private boolean followType;
-    private double followParam;
+    private String accountRole;
     private String accountType;
-    private boolean orderChoice;
-    private boolean sellChoice;
     private String hostAddr;
-    private boolean deleteStatus;
 
     public FXCMInfoEntity() {
     }
@@ -30,49 +24,6 @@ public class FXCMInfoEntity extends EntityBase {
         this.fxcmPassword = fxcmPassword;
         this.accountType = accountType;
         this.hostAddr = hostAddr;
-    }
-
-    public FXCMInfoEntity(String userId, String fxcmAccount, String fxcmPassword, boolean followType, double followParam, String accountType, String hostAddr, boolean deleteStatus) {
-        this.userId = userId;
-        this.fxcmAccount = fxcmAccount;
-        this.fxcmPassword = fxcmPassword;
-        this.followType = followType;
-        this.followParam = followParam;
-        this.accountType = accountType;
-        this.hostAddr = hostAddr;
-        this.deleteStatus = deleteStatus;
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(String accountType) {
-        this.accountType = accountType;
-    }
-
-    public String getHostAddr() {
-        return hostAddr;
-    }
-
-    public void setHostAddr(String hostAddr) {
-        this.hostAddr = hostAddr;
-    }
-
-    public boolean isDeleteStatus() {
-        return deleteStatus;
-    }
-
-    public void setDeleteStatus(boolean deleteStatus) {
-        this.deleteStatus = deleteStatus;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getFxcmAccount() {
@@ -91,71 +42,43 @@ public class FXCMInfoEntity extends EntityBase {
         this.fxcmPassword = fxcmPassword;
     }
 
-    public boolean isFollowType() {
-        return followType;
-    }
-
-    public void setFollowType(boolean followType) {
-        this.followType = followType;
-    }
-
-    public double getFollowParam() {
-        return followParam;
-    }
-
-    public void setFollowParam(double followParam) {
-        this.followParam = followParam;
-    }
-
-    public boolean isAccountRole() {
+    public String getAccountRole() {
         return accountRole;
     }
 
-    public void setAccountRole(boolean accountRole) {
+    public void setAccountRole(String accountRole) {
         this.accountRole = accountRole;
     }
 
-    public boolean isOrderChoice() {
-        return orderChoice;
+    public String getAccountType() {
+        return accountType;
     }
 
-    public void setOrderChoice(boolean orderChoice) {
-        this.orderChoice = orderChoice;
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
     }
 
-    public boolean isSellChoice() {
-        return sellChoice;
+    public String getHostAddr() {
+        return hostAddr;
     }
 
-    public void setSellChoice(boolean sellChoice) {
-        this.sellChoice = sellChoice;
+    public void setHostAddr(String hostAddr) {
+        this.hostAddr = hostAddr;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"userId\":\"")
-                .append(userId).append('\"');
-        sb.append(",\"accountRole\":")
-                .append(accountRole);
-        sb.append(",\"fxcmAccount\":\"")
+        sb.append("\"fxcmAccount\":\"")
                 .append(fxcmAccount).append('\"');
         sb.append(",\"fxcmPassword\":\"")
                 .append(fxcmPassword).append('\"');
-        sb.append(",\"followType\":")
-                .append(followType);
-        sb.append(",\"followParam\":")
-                .append(followParam);
+        sb.append(",\"accountRole\":\"")
+                .append(accountRole).append('\"');
         sb.append(",\"accountType\":\"")
                 .append(accountType).append('\"');
-        sb.append(",\"orderChoice\":")
-                .append(orderChoice);
-        sb.append(",\"sellChoice\":")
-                .append(sellChoice);
         sb.append(",\"hostAddr\":\"")
                 .append(hostAddr).append('\"');
-        sb.append(",\"deleteStatus\":")
-                .append(deleteStatus);
         sb.append('}');
         return sb.toString();
     }

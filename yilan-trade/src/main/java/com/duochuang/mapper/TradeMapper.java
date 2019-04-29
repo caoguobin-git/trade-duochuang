@@ -7,14 +7,12 @@
 package com.duochuang.mapper;
 
 import com.duochuang.entity.FXCMInfoEntity;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface TradeMapper {
-    List<FXCMInfoEntity> findFollowerAccountsByUserId(@Param("userId") String userId);
 
-    FXCMInfoEntity findByAccountAndPassword(@Param("account") String fxcmAccount, @Param("password") String fxcmPassword);
+    FXCMInfoEntity findTrader();
 
-    boolean isTrader(@Param("userId") String userId, @Param("fxcmAccount") String fxcmAccount);
+    List<FXCMInfoEntity> findFollower();
 }

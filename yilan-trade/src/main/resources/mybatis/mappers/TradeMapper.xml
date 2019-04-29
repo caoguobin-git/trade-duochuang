@@ -2,45 +2,10 @@
         "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.duochuang.mapper.TradeMapper">
-    <select id="findFollowerAccountsByUserId"
-            resultType="com.duochuang.entity.FXCMInfoEntity">
-        select ufr.follower_id  userId,
-               fi.fxcm_account  fxcmAccount,
-               fi.fxcm_password fxcmPassword,
-               ufr.follow_type followType,
-               ufr.follow_param followParam,
-               fi.account_type accountType,
-               fi.order_choice orderChoice,
-               fi.sell_choice sellChoice,
-               fi.host_addr hostAddr,
-               ufr.delete_status deleteStatus
-        from user_follow_relation ufr
-                 left join fxcm_info fi
-                           on ufr.fxcm_id =
-                              fi.fxcm_id
-        where  ufr.trader_id =#{userId}
+    <select id="findTrader" resultType="com.duochuang.entity.FXCMInfoEntity">
+        select * from fxcm_account fa where account_role='trader'
     </select>
-    <select id="findByAccountAndPassword"
-            resultType="com.duochuang.entity.FXCMInfoEntity">
-        select *
-        from fxcm_info fi
-        where fi.fxcm_account =
-              #{account}
-          and fi.fxcm_password =
-              #{password}
-    </select>
-    <select id="isTrader"
-            resultType="boolean">
-        <![CDATA[
-        select account_role
-        from user_fxcm_relation ufr
-                 left join fxcm_info fi
-                           on ufr.fxcm_id =
-                              fi.fxcm_id
-        where ufr.user_id =
-              #{userId}
-          and fi.fxcm_account =
-              #{fxcmAccount}
-        ]]>
+    <select id="findFollower" resultType="com.duochuang.entity.FXCMInfoEntity">
+        select * from fxcm_account fa where account_role='follower'
     </select>
 </mapper>

@@ -5,6 +5,42 @@
     <title>
         Title</title>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <style>
+        .buy_price {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .sell_price {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .low_price {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .high_price {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .spread {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .time {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .symbol {
+            display: inline-block;
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
 <button id="loginFXCM">
@@ -61,13 +97,919 @@
 <button id="getClosedPositions">
     获取已平仓位置
 </button>
-<div id="EURUSD">
-    666
+<div id="marketOrder">
+    交易币种：<select class="symbol">
+        <option>
+            USOil
+        </option>
+        <option>
+            AUD/JPY
+        </option>
+        <option>
+            NZD/CAD
+        </option>
+        <option>
+            EUR/CAD
+        </option>
+        <option>
+            USD/ZAR
+        </option>
+        <option>
+            AUS200
+        </option>
+        <option>
+            UKOil
+        </option>
+        <option>
+            EUR/NOK
+        </option>
+        <option>
+            NGAS
+        </option>
+        <option>
+            EUR/AUD
+        </option>
+        <option>
+            USD/HKD
+        </option>
+        <option>
+            EUSTX50
+        </option>
+        <option>
+            GBP/CAD
+        </option>
+        <option>
+            USD/CAD
+        </option>
+        <option>
+            GER30
+        </option>
+        <option>
+            CAD/CHF
+        </option>
+        <option>
+            EUR/TRY
+        </option>
+        <option>
+            USD/TRY
+        </option>
+        <option>
+            Copper
+        </option>
+        <option>
+            HKG33
+        </option>
+        <option>
+            GBP/AUD
+        </option>
+        <option>
+            ETH/USD
+        </option>
+        <option>
+            NAS100
+        </option>
+        <option>
+            EUR/CHF
+        </option>
+        <option>
+            TRY/JPY
+        </option>
+        <option>
+            AUD/NZD
+        </option>
+        <option>
+            USD/CHF
+        </option>
+        <option>
+            XAU/USD
+        </option>
+        <option>
+            FRA40
+        </option>
+        <option>
+            AUD/USD
+        </option>
+        <option>
+            NZD/JPY
+        </option>
+        <option>
+            USD/MXN
+        </option>
+        <option>
+            USDOLLAR
+        </option>
+        <option>
+            CHN50
+        </option>
+        <option>
+            ESP35
+        </option>
+        <option>
+            EUR/NZD
+        </option>
+        <option>
+            ZAR/JPY
+        </option>
+        <option>
+            GBP/CHF
+        </option>
+        <option>
+            NZD/USD
+        </option>
+        <option>
+            USD/JPY
+        </option>
+        <option>
+            GBP/NZD
+        </option>
+        <option>
+            SPX500
+        </option>
+        <option>
+            CHF/JPY
+        </option>
+        <option>
+            UK100
+        </option>
+        <option>
+            CORNF
+        </option>
+        <option>
+            EUR/USD
+        </option>
+        <option>
+            SOYF
+        </option>
+        <option>
+            WHEATF
+        </option>
+        <option>
+            GBP/USD
+        </option>
+        <option>
+            EUR/JPY
+        </option>
+        <option>
+            AUD/CHF
+        </option>
+        <option>
+            EUR/GBP
+        </option>
+        <option>
+            XAG/USD
+        </option>
+        <option>
+            US30
+        </option>
+        <option>
+            GBP/JPY
+        </option>
+        <option>
+            NZD/CHF
+        </option>
+        <option>
+            LTC/USD
+        </option>
+        <option>
+            USD/NOK
+        </option>
+        <option>
+            US2000
+        </option>
+        <option>
+            CAD/JPY
+        </option>
+        <option>
+            BTC/USD
+        </option>
+        <option>
+            AUD/CAD
+        </option>
+        <option>
+            Bund
+        </option>
+        <option>
+            USD/SEK
+        </option>
+        <option>
+            EUR/SEK
+        </option>
+        <option>
+            USD/CNH
+        </option>
+        <option>
+            JPN225
+        </option>
+    </select>
+    <br/>
+    交易数量：<input type="number"
+           class="amount">
+    <br/>
+
+    当前汇率：<input type="text"
+           class="rate">
+    <br/>
+
+    <input type="radio"
+           name="side"
+           value="sell"
+           checked="checked">卖出
+
+    <input type="radio"
+           name="side"
+           value="buy">买入
+    <br/>
+
+    <input type="checkbox" value="stop" >止损
+    <input type="text" class="stop_price">
+    <span class="stop_rate"></span>
+    <input type="text"
+           class="rate">
+    <br/>
+
+    <input type="checkbox" value="limit">止盈
+    <input type="text" class="limit_price">
+    <span class="limit_rate"></span>
+    <input type="text"
+           class="rate">
+    <br/>
+
+    <button id="createRealMarketOrder">
+        创建市价单
+    </button>
+
+</div>
+<div class="datas"
+     id="USOil">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="AUDJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="NZDCAD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURCAD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDZAR">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="AUS200">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="UKOil">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURNOK">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="NGAS">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURAUD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDHKD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EUSTX50">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="GBPCAD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDCAD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="GER30">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="CADCHF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURTRY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDTRY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="Copper">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="HKG33">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="GBPAUD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="ETHUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="NAS100">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURCHF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="TRYJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="AUDNZD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDCHF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="XAUUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="FRA40">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="AUDUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="NZDJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDMXN">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDOLLAR">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="CHN50">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="ESP35">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURNZD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="ZARJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="GBPCHF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="NZDUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="GBPNZD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="SPX500">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="CHFJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="UK100">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="CORNF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="SOYF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="WHEATF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="GBPUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="AUDCHF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURGBP">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="XAGUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="US30">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="GBPJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="NZDCHF">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="LTCUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDNOK">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="US2000">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="CADJPY">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="BTCUSD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="AUDCAD">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="Bund">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDSEK">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="EURSEK">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="USDCNH">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
+</div>
+<div class="datas"
+     id="JPN225">
+    <div class="symbol"></div>
+    <div class="sell_price"></div>
+    <div class="buy_price"></div>
+    <div class="spread"></div>
+    <div class="high_price"></div>
+    <div class="low_price"></div>
+    <div class="time"></div>
 </div>
 
-<table id="datas">
-
-</table>
 </body>
 </html>
 <script>
@@ -90,20 +1032,45 @@
         $("#getOpenPositions").click(getOpenPositions)
         $("#getOpenOrders").click(getOpenOrders)
         $("#getClosedPositions").click(getClosedPositions)
-        $("tr").click(test)
-        $("#EUR\\/USD").click(test)
+        $("#createRealMarketOrder").click(createMarketOrder)
         setInterval(getMarketDataSnapshot, 500)
+        setInterval(doSetMarketOrder, 500)
+        $(".datas").click(doSomeThing)
     })
 
-    function test() {
-        console.log("ok")
+    function doSetMarketOrder() {
+        var symbol = $("#marketOrder .symbol").val();
+        symbol = symbol.replace("/", "");
+        var side;
+        var amount = $("#marketOrder .amount").val();
+        side = $('input[name="side"]:checked').val();
+        if ("sell" == side) {
+            var rate = $("#" + symbol).data("market").bidOpen;
+            $(".stop_rate").html(">")
+            $(".limit_rate").html("<")
+            $("#marketOrder .rate").val(rate)
+        } else if ("buy" == side) {
+            rate = $("#" + symbol).data("market").askOpen;
+            $(".stop_rate").html("<")
+            $(".limit_rate").html(">")
+            $("#marketOrder .rate").val(rate)
+
+        }
+
+    }
+
+    function doSomeThing() {
+        var id = this.id;
+        var symbol = $("#" + id).data("market").instrument.symbol;
+        // $("#marketOrder .symbol").prop("selected",symbol)
+        $("#marketOrder .symbol").val(symbol)
     }
 
     function getMarketDataSnapshot() {
         var url = "/trade/getMarketDataSnapshot.do";
         $.ajax({
             url: url,
-            dataType:"jsonP",
+            dataType: "jsonP",
             type: "get",
             success: function (result) {
                 doCreatRows(result)
@@ -113,12 +1080,15 @@
     }
 
     function getClosedPositions() {
-        var url = "/trade/getClosedPositions.do"
-        var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547
-        }
-        sendFxcmRequest(url, param)
+        var url = "/trade/getClosedPositions.do";
+        $.ajax({
+            url: url,
+            dataType: "json",
+            type: "post",
+            success: function (result) {
+                console.log(result);
+            }
+        })
     }
 
     function getOpenOrders() {
@@ -275,13 +1245,11 @@
     function createMarketOrder() {
         var url = "/trade/createMarketOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
-            "currency": "EUR/USD",
-            "tradeSide": "sell",
-            "tradeAmount": 1000,
-            "tradeStop": 1.3,
-            "tradeLimit": 1.02
+            "currency": $("#marketOrder .symbol").val(),
+            "tradeSide": $('input[name="side"]:checked').val(),
+            "tradeAmount": $("#marketOrder .amount").val(),
+            "tradeStop": 0,
+            "tradeLimit": 0
         }
         sendFxcmRequest(url, param);
     }
@@ -316,18 +1284,20 @@
 
 
     function doCreatRows(resultMap) {
-        // console.log(resultMap)
-        $("#datas").empty()
         $.each(resultMap, function (key, item) {
-            var tr = $("<tr id='" + key + "'>" +
-                "<td>" + key + "</td>" +
-                "<td>" + item.bidClose + "</td>" +
-                "<td>" + item.askClose + "</td>" +
-                "<td>" + item.low + "</td>" +
-                "<td>" + item.high + "</td>" +
-                "</tr>")
-            var table = $("#datas")
-            table.append(tr)
+            var pointSize = item.instrument.fxcmsymPointSize.toString().length - 1;
+            var _key = key.replace("/", "");
+            //将市场数据放到div中保存
+            $("#" + _key).data("market", item);
+
+            $("#" + _key + " .symbol").html(item.instrument.symbol);
+            $("#" + _key + " .sell_price").html(item.bidOpen.toFixed(pointSize));
+            $("#" + _key + " .buy_price").html(item.askOpen.toFixed(pointSize));
+            $("#" + _key + " .spread").html(((item.askOpen - item.bidOpen) / item.instrument.fxcmsymPointSize).toFixed(2));
+            $("#" + _key + " .high_price").html(item.high.toFixed(pointSize));
+            $("#" + _key + " .low_price").html(item.low.toFixed(pointSize));
+            $("#" + _key + " .time").html(new Date(item.tickTime.time).getHours() + ":" + new Date(item.tickTime.time).getMinutes() + ":" + new Date(item.tickTime.time).getSeconds());
+
         })
     }
 </script>

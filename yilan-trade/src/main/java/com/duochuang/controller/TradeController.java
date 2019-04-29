@@ -9,10 +9,12 @@ package com.duochuang.controller;
 
 
 import com.duochuang.entity.OpenPositionEntity;
+import com.duochuang.entity.OrderEntity;
 import com.duochuang.service.TradeService;
 import com.duochuang.vo.JsonResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fxcm.fix.posttrade.ClosedPositionReport;
 import com.fxcm.fix.pretrade.MarketDataSnapshot;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +45,8 @@ public class TradeController {
 
 
     @RequestMapping("/index")
-    public String index(){
-        return "trade-yilan";
+    public String index(String path) {
+        return path;
     }
 
     /**
@@ -63,20 +65,20 @@ public class TradeController {
 
     @RequestMapping("/getMarketDataSnapshot")
     @ResponseBody
-    public String getMarketDataSnapshot(HttpServletRequest request, HttpServletResponse response)    {
+    public String getMarketDataSnapshot(HttpServletRequest request, HttpServletResponse response) {
         String callback = request.getParameter("callback");
         response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String, MarketDataSnapshot> marketDatas = tradeService.getMarketDataSnapshot();
-        if (marketDatas==null){
+        if (marketDatas == null) {
             return null;
         }
-        String result=null;
+        String result = null;
         try {
-            result=objectMapper.writeValueAsString(marketDatas);
+            result = objectMapper.writeValueAsString(marketDatas);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return callback+"("+result+")";
+        return callback + "(" + result + ")";
     }
 
     private JsonResult getJsonResult(String marketDatas) {
@@ -86,7 +88,7 @@ public class TradeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return  new JsonResult(map);
+        return new JsonResult(map);
     }
 
 
@@ -152,7 +154,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.updateSLMarketOrder( orderId, type, price);
+        String result = tradeService.updateSLMarketOrder(orderId, type, price);
         return new JsonResult(result);
     }
 
@@ -168,7 +170,7 @@ public class TradeController {
     public JsonResult deleteStopLimitMarketOrder(String userToken, String fxcmAccount, String orderId, String type) {
         String userId = userToken;
 
-        String result = tradeService.deleteSLMarketOrder( orderId, type);
+        String result = tradeService.deleteSLMarketOrder(orderId, type);
         return new JsonResult(result);
     }
 
@@ -183,7 +185,7 @@ public class TradeController {
     public JsonResult deleteTrueMarketOrder(String userToken, String fxcmAccount, String fxcmPosID) {
         String userId = userToken;
 
-        String result = tradeService.deleteMarketOrder( fxcmPosID);
+        String result = tradeService.deleteMarketOrder(fxcmPosID);
         return new JsonResult(result);
     }
 
@@ -223,7 +225,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.createEntryOrder( price, type, amount, side, currency, stop, limit);
+        String result = tradeService.createEntryOrder(price, type, amount, side, currency, stop, limit);
         return new JsonResult(result);
     }
 
@@ -242,7 +244,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.updateEntryOrder( orderId, amount, price);
+        String result = tradeService.updateEntryOrder(orderId, amount, price);
         return new JsonResult(result);
     }
 
@@ -257,7 +259,7 @@ public class TradeController {
     public JsonResult deleteEntryOrder(String userToken, String fxcmAccount, String orderId) {
         String userId = userToken;
 
-        String result = tradeService.deleteEntryOrder( orderId);
+        String result = tradeService.deleteEntryOrder(orderId);
         return new JsonResult(result);
     }
 
@@ -291,7 +293,7 @@ public class TradeController {
         }
         String userId = userToken;
 
-        String result = tradeService.createSLEntryOrder( orderId, price, type);
+        String result = tradeService.createSLEntryOrder(orderId, price, type);
         return new JsonResult(result);
     }
 
@@ -310,7 +312,7 @@ public class TradeController {
             return new JsonResult("401", "wrong params", null);
         }
         String userId = userToken;
-        String result = tradeService.updateSLEntryOrder( orderId, type, price);
+        String result = tradeService.updateSLEntryOrder(orderId, type, price);
         return new JsonResult(result);
     }
 
@@ -325,7 +327,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult deleteSLEntryOrder(String userToken, String fxcmAccount, String orderId, String type) {
         String userId = userToken;
-        String result = tradeService.deleteSLEntryOrder( orderId, type);
+        String result = tradeService.deleteSLEntryOrder(orderId, type);
         return new JsonResult(result);
     }
 
@@ -342,7 +344,7 @@ public class TradeController {
     @ResponseBody
     public JsonResult changePassword(String userToken, String fxcmAccount, String password, String newPassword) {
         String userId = userToken;
-        String result = tradeService.changeFXCMPassword( password, newPassword);
+        String result = tradeService.changeFXCMPassword(password, newPassword);
         return new JsonResult(result);
     }
 
@@ -350,46 +352,36 @@ public class TradeController {
     /**
      * 获取开仓位置
      *
-     * @param userToken   userToken
-     * @param fxcmAccount 福汇账号
      * @return 开仓位置
      */
     @RequestMapping(value = "/getOpenPositions", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult getOpenPositions(String userToken, String fxcmAccount) {
-        String userId = userToken;
+    public JsonResult getOpenPositions() {
         Map<String, Map<String, OpenPositionEntity>> result = tradeService.getOpenPositions();
-        return  new JsonResult(result);
+        return new JsonResult(result);
     }
 
     /**
      * 获取所有挂单信息
      *
-     * @param userToken   userToken
-     * @param fxcmAccount 福汇账号
      * @return 所有挂单信息
      */
     @RequestMapping(value = "/getOpenOrders", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult getOpenOrders(String userToken, String fxcmAccount) {
-        String userId = userToken;
-        String result = tradeService.getOpenOrders();
-        return getJsonResult(result);
+    public JsonResult getOpenOrders() {
+        Map<String, Map<String, OrderEntity>> openOrders = tradeService.getOpenOrders();
+        return new JsonResult(openOrders);
     }
 
     /**
      * 获取所有已关闭仓位信息
-     *
-     * @param userToken   userToken
-     * @param fxcmAccount 福汇账号
      * @return 所有已关闭仓位
      */
     @RequestMapping(value = "/getClosedPositions", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult getClosedPositions(String userToken, String fxcmAccount) {
-        String userId = userToken;
-        String result = tradeService.getClosedPositions();
-        return getJsonResult(result);
+    public JsonResult getClosedPositions() {
+        Map<String, Map<String, ClosedPositionReport>> closedPositions = tradeService.getClosedPositions();
+        return new JsonResult(closedPositions);
     }
 
     /**
@@ -467,7 +459,7 @@ public class TradeController {
     @RequestMapping(value = "/getOrderExecutionReport")
     @ResponseBody
     public JsonResult getOrderExecutionReport(String userToken, String fxcmAccount, String listId) {
-        String orderExecutionReport = tradeService.getOrderExecutionReport( listId);
+        String orderExecutionReport = tradeService.getOrderExecutionReport(listId);
         if (Strings.isNullOrEmpty(orderExecutionReport)) {
             return new JsonResult(null);
         }
