@@ -1544,7 +1544,7 @@
             $("#" + _key + " .spread").html(((item.askOpen - item.bidOpen) / item.instrument.fxcmsymPointSize).toFixed(2));
             $("#" + _key + " .high_price").html(item.high.toFixed(pointSize));
             $("#" + _key + " .low_price").html(item.low.toFixed(pointSize));
-            $("#" + _key + " .time").html(new Date(item.tickTime.time).getHours() + ":" + new Date(item.tickTime.time).getMinutes() + ":" + new Date(item.tickTime.time).getSeconds());
+            $("#" + _key + " .time").html(new Date(item.tickTime.time).getHours() + ":" + ((new Date(item.tickTime.time).getMinutes()).toString().length>1?new Date(item.tickTime.time).getMinutes():("0"+new Date(item.tickTime.time).getMinutes())) + ":" + new Date(item.tickTime.time).getSeconds());
 
         })
     }
