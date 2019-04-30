@@ -8,18 +8,24 @@
 
 </head>
 <body>
-<div class="datas" id=""><div class="sell_price"></div><div class="buy_price"></div><div class="spread"></div><div class="high_price"></div><div class="low_price"></div><div class="time"></div></div></div>
-<div id="EUR/USD"> <div class="spread">test1111</div></div>
-<button id="test">dianji</button>
+<div id="test">dianji</div>
 </body>
 </html>
 <script>
     $(function () {
-        $("#test").click(test);
+        $("#test").mousedown(test)
+        document.oncontextmenu = function(e){
+            return false;
+        }
     })
-
-    function test() {
-        console.log($("#datas .spread").html())
+    function test(e) {
+        console.log(e)
+        if (e.which==1){
+            console.log("点击了左键")
+        }
+        if(e.which == 3){
+           console.log("点击了右键")
+        }
     }
 
 </script>

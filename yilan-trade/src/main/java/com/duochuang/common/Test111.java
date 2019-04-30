@@ -13,28 +13,22 @@ import java.io.*;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Scanner;
 import java.util.Set;
 
 public class Test111 {
     public static void main(String[] args) throws IOException {
-        URL url=new URL("http://www.fxyilan.cn:8080/pretrade/getMarketDataSnapshot.do");
-        InputStream inputStream=url.openStream();
-        BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
-        String a =null;
-        String result = null;
-        while ((a=bufferedReader.readLine())!=null){
-            result=a;
-            System.out.println(a);
+        double trader=26000.0;
+        double follower=50000.0;
+        while (true) {
+            double x=new Scanner(System.in).nextDouble();
+            double a=getBullionAmount(trader, x);
+            System.out.println(x+"   "+a);
         }
-        ObjectMapper objectMapper=new ObjectMapper();
-        LinkedHashMap linkedHashMap = objectMapper.readValue(result, LinkedHashMap.class);
-        LinkedHashMap<Object,Object > data = (LinkedHashMap<Object, Object>) linkedHashMap.get("data");
-        Set<Object> objects = data.keySet();
-        for (Object object : objects) {
-            String x = (String) object;
-            System.out.println("<option>"+x+"</option>");
-        }
+    }
 
-
+    private static double getBullionAmount(double trader, double amount) {
+        double follower=50000.0;
+        return ((int)(follower/trader*amount*100000))/1000*1000;
     }
 }

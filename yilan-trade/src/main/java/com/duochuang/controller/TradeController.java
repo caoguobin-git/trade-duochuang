@@ -15,6 +15,7 @@ import com.duochuang.vo.JsonResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fxcm.fix.posttrade.ClosedPositionReport;
+import com.fxcm.fix.posttrade.CollateralReport;
 import com.fxcm.fix.pretrade.MarketDataSnapshot;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,12 @@ public class TradeController {
 
 
     @RequestMapping("/index")
-    public String index(String path) {
+    public String index() {
+        return "index";
+    }
+
+    @RequestMapping("/jump2page")
+    public String jump2page(String path){
         return path;
     }
 
@@ -104,12 +110,11 @@ public class TradeController {
      */
     @RequestMapping(value = "createMarketOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult createTrueMarketOrder(String userToken, String fxcmAccount, String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit) {
+    public JsonResult createTrueMarketOrder(String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit) {
 
         if (!isDoubleOrFloat(tradeAmount, tradeStop, tradeLimit)) {
             return new JsonResult("401", "wrong params", null);
         }
-        String userId = userToken;
 
         String result = tradeService.createMarketOrder(currency, tradeSide, tradeAmount, tradeStop, tradeLimit);
 
@@ -219,11 +224,10 @@ public class TradeController {
      */
     @RequestMapping(value = "createEntryOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult createEntryOrder(String userToken, String fxcmAccount, String price, String type, String amount, String side, String currency, String stop, String limit) {
+    public JsonResult createEntryOrder(String price, String type, String amount, String side, String currency, String stop, String limit) {
         if (!isDoubleOrFloat(price, amount, stop, limit)) {
             return new JsonResult("401", "wrong params", null);
         }
-        String userId = userToken;
 
         String result = tradeService.createEntryOrder(price, type, amount, side, currency, stop, limit);
         return new JsonResult(result);
@@ -386,17 +390,14 @@ public class TradeController {
 
     /**
      * 获取保证金报告
-     *
-     * @param userToken   userToken
-     * @param fxcmAccount 福汇账号
+
      * @return
      */
     @RequestMapping(value = "/getCollateralReport", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult getCollateralReport(String userToken, String fxcmAccount) {
-        String userId = userToken;
-        String result = tradeService.getCollateralReport();
-        return getJsonResult(result);
+    public JsonResult getCollateralReport() {
+        Map<String, CollateralReport> result = tradeService.getCollateralReport();
+       return  new JsonResult(result);
     }
 
 

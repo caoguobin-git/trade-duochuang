@@ -3,6 +3,7 @@ package com.duochuang.service;
 import com.duochuang.entity.OpenPositionEntity;
 import com.duochuang.entity.OrderEntity;
 import com.fxcm.fix.posttrade.ClosedPositionReport;
+import com.fxcm.fix.posttrade.CollateralReport;
 import com.fxcm.fix.pretrade.MarketDataSnapshot;
 
 import java.util.Map;
@@ -56,7 +57,7 @@ public interface TradeService {
 
     Map<String, Map<String, ClosedPositionReport>> getClosedPositions();
 
-    String getCollateralReport();
+    Map<String, CollateralReport> getCollateralReport();
 
     String getOrderExecutionReport(String listId);
 

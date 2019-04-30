@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.datatransfer.StringSelection;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
@@ -172,7 +171,7 @@ public class TradeServiceImpl implements TradeService {
         String secondary = tradeThread.getFxcmInfoEntity().getFxcmAccount() + new Date().getTime();
         String result = tradeThread.createEntryOrder(price, type, amount, side, currency, stop, limit, secondary);
 
-        for (int i = 0; i < tradeThreadList.size(); i++) {
+        for (int i = 1; i < tradeThreadList.size(); i++) {
             tradeThreadList.get(i).createEntryOrder(price, type, amount, side, currency, stop, limit, secondary);
         }
         return result;
@@ -289,27 +288,12 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public String getCollateralReport() {
-        TradeThread tradeThread = tradeThreadList.get(0);
-        if (tradeThread == null) {
-            Map map = new HashMap();
-            map.put("message", "登录状态异常，请重新登录");
-            try {
-                return objectMapper.writeValueAsString(map);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+    public Map<String, CollateralReport> getCollateralReport() {
+        Map<String, CollateralReport> collateralReports = new LinkedHashMap<>();
+        for (TradeThread tradeThread : tradeThreadList) {
+            collateralReports.put(tradeThread.getFxcmInfoEntity().getFxcmAccount(), tradeThread.getCollateralReport());
         }
-        CollateralReport collateralReport = tradeThread.getCollateralReport();
-        Map map = new HashMap();
-        map.put("collateralReport", collateralReport);
-        String result = null;
-        try {
-            result = objectMapper.writeValueAsString(map);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return collateralReports;
     }
 
     @Override

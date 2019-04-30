@@ -27,6 +27,7 @@ import com.fxcm.fix.trade.*;
 import com.fxcm.messaging.ISessionStatus;
 import com.fxcm.messaging.ITransportable;
 import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -45,7 +46,7 @@ public class TradeThread implements Runnable {
     private IGateway iGateway;
     private IGenericMessageListener iGenericMessageListener;
     private IStatusMessageListener iStatusMessageListener;
-    private Map<String, MarketDataSnapshot> marketDataSnapshotMap = new ConcurrentHashMap<>();
+    private static Map<String, MarketDataSnapshot> marketDataSnapshotMap = new ConcurrentHashMap<>();
 
     private String closeTrueMarketOrderID = null;
 
@@ -168,50 +169,50 @@ public class TradeThread implements Runnable {
                     ExecutionReport executionReport = (ExecutionReport) iMessage;
 
                     //订单执行失败，推送失败原因
-                    if (executionReport.getFXCMOrdStatus().getCode().equalsIgnoreCase("R")) {
-
-                        if (failedOrder != null && !failedOrder.contains(executionReport.getListID()) && !"Limit".equalsIgnoreCase(executionReport.getOrdType().getDesc()) && !"stop".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
-                            failedOrder.add(executionReport.getListID());
-                            String reject = null;
-                            try {
-                                reject = executionReport.getFXCMErrorDetails();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            Map<String, String> params = new HashMap<>();
-                            params.put("token", "888888");
-                            params.put("msg", reject);
-                            params.put("title", "下单失败");
-                            JPush.jpushOrderFailed(params);
-                        } else if (!failedOrder.contains(executionReport.getListID())) {
-                            if ("Limit".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
-                                String reject = null;
-                                try {
-                                    reject = executionReport.getFXCMErrorDetails();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                Map<String, String> params = new HashMap<>();
-                                params.put("token", "888888");
-                                params.put("msg", reject);
-                                params.put("title", "设置止盈失败");
-                                JPush.jpushOrderFailed(params);
-                            }
-                            if ("Stop".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
-                                String reject = null;
-                                try {
-                                    reject = executionReport.getFXCMErrorDetails();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                Map<String, String> params = new HashMap<>();
-                                params.put("token", "888888");
-                                params.put("msg", reject);
-                                params.put("title", "设置止损失败");
-                                JPush.jpushOrderFailed(params);
-                            }
-                        }
-                    }
+//                    if (executionReport.getFXCMOrdStatus().getCode().equalsIgnoreCase("R")) {
+//
+//                        if (!failedOrder.contains(executionReport.getListID()) && !"Limit".equalsIgnoreCase(executionReport.getOrdType().getDesc()) && !"stop".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
+//                            failedOrder.add(executionReport.getListID());
+//                            String reject = null;
+//                            try {
+//                                reject = executionReport.getFXCMErrorDetails();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                            Map<String, String> params = new HashMap<>();
+//                            params.put("token", "888888");
+//                            params.put("msg", reject);
+//                            params.put("title", "下单失败");
+//                            JPush.jpushOrderFailed(params);
+//                        } else if (!failedOrder.contains(executionReport.getListID())) {
+//                            if ("Limit".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
+//                                String reject = null;
+//                                try {
+//                                    reject = executionReport.getFXCMErrorDetails();
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                                Map<String, String> params = new HashMap<>();
+//                                params.put("token", "888888");
+//                                params.put("msg", reject);
+//                                params.put("title", "设置止盈失败");
+//                                JPush.jpushOrderFailed(params);
+//                            }
+//                            if ("Stop".equalsIgnoreCase(executionReport.getOrdType().getDesc())) {
+//                                String reject = null;
+//                                try {
+//                                    reject = executionReport.getFXCMErrorDetails();
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                                Map<String, String> params = new HashMap<>();
+//                                params.put("token", "888888");
+//                                params.put("msg", reject);
+//                                params.put("title", "设置止损失败");
+//                                JPush.jpushOrderFailed(params);
+//                            }
+//                        }
+//                    }
 
                     if (!Strings.isNullOrEmpty(createTrueMarketOrderID) && createTrueMarketOrderID.equalsIgnoreCase(executionReport.getListID()) && "R".equalsIgnoreCase(executionReport.getFXCMOrdStatus().getCode())) {
                         if (orderHistory.get(createTrueMarketOrderID) == null) {
@@ -447,7 +448,22 @@ public class TradeThread implements Runnable {
         double limit = Double.parseDouble(tradeLimit);
 
 
-        amount = getAmount(cashOutStanding, amount);
+        /**
+         * 判断交易种类
+         * 1.外汇乘以100000 取1000的整数倍
+         * 2.黄金/白银 取factor的整数倍
+         */
+        System.out.println(currency);
+        System.out.println(collateralReport.getAccount()+"    "+marketDataSnapshotMap.keySet());
+        MarketDataSnapshot marketDataSnapshot = marketDataSnapshotMap.get(currency);
+        int product = marketDataSnapshot.getInstrument().getProduct();
+        int factor = marketDataSnapshot.getInstrument().getFactor();
+        if (product==2){
+            amount=getBullionAmount(cashOutStanding,amount,factor);
+        }else if (product==4){
+            amount=getForexAmount(cashOutStanding,amount);
+        }
+
         if (amount<=0){
             return null;
         }
@@ -515,13 +531,21 @@ public class TradeThread implements Runnable {
         return createTrueMarketOrderID;
     }
 
-    //对跟单进行取值操作
-    private double getAmount(double cashOutStanding, double amount) {
-        double a = cashOutStanding;
-        double b = collateralReport.getCashOutstanding();
-        double mAmount = Math.floor(b / a * amount / 1000) * 1000;
-        return mAmount;
+    //获取外汇交易数量
+    private double getForexAmount(double cashOutStanding, double amount) {
+        double trader=cashOutStanding;
+        double follower=collateralReport.getCashOutstanding();
+        return  ((int)(follower/trader*amount*100000))/1000*1000;
     }
+
+    //获取黄金和白银的交易数量
+    private double getBullionAmount(double cashOutStanding, double amount, int factor) {
+        double trader=cashOutStanding;
+        double follower = collateralReport.getCashOutstanding();
+        double result=((int)(follower/trader*amount))/factor*factor;
+        return result;
+    }
+
 
     /**
      * 市价单平仓
