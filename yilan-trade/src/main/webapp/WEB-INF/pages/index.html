@@ -10,7 +10,7 @@
 <body>
 <button id="trade">交易</button>
 <button id="accounts">账户管理</button>
-<div id="hahahaha" style="width: 800px;height: 500px;background: aqua"></div>
+<div id="tradeArea" ></div>
 </body>
 </html>
 <script>
@@ -19,10 +19,10 @@
         $("#trade").click(loadTrade)
     })
     function loadAccounts() {
-        $("#hahahaha").load("/trade/jump2page.do?path=accounts")
+        $("#tradeArea").load("/trade/jump2page.do?path=accounts")
     }
     function loadTrade() {
-        $("#hahahaha").load("/trade/jump2page.do?path=trade")
+        $("#tradeArea").load("/trade/jump2page.do?path=trade")
 
     }
 </script>
