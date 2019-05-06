@@ -14,14 +14,14 @@
 
 	<!--开启mvc注解  -->
 	<mvc:annotation-driven/>
-	
+
 	<!--开启包扫描  -->
 	<!-- <context:component-scan base-package="com.duochuang.controller"/> -->
 	
 	<!--定义视图解析器  -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<!--定义前缀和后缀  -->
-		<property name="prefix" value="/WEB-INF/pages/"/>
+		<property name="prefix" value="/pages/"/>
 		<property name="suffix" value=".html"/>
 	</bean>
 	
@@ -38,5 +38,8 @@
 	
 	
 	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"></bean>
-	
+
+	<mvc:default-servlet-handler/>
+
+
 </beans>

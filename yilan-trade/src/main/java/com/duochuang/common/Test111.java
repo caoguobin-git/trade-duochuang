@@ -7,28 +7,22 @@
 
 package com.duochuang.common;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.*;
-import java.net.URL;
-import java.util.HashSet;
+import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.LinkedList;
 
 public class Test111 {
     public static void main(String[] args) throws IOException {
-        double trader=26000.0;
-        double follower=50000.0;
-        while (true) {
-            double x=new Scanner(System.in).nextDouble();
-            double a=getBullionAmount(trader, x);
-            System.out.println(x+"   "+a);
-        }
-    }
-
-    private static double getBullionAmount(double trader, double amount) {
-        double follower=50000.0;
-        return ((int)(follower/trader*amount*100000))/1000*1000;
+        String a ="[{\"B2\":\"4\",\"B3\":\"95\",\"B4\":\"0\",\"B5\":\"0\",\"B1\":\"F500003F3D\"},{\"B2\":\"5\",\"B3\":\"45\",\"B4\":\"0\",\"B5\":\"0\",\"B1\":\"F600004292\"}]";
+        ObjectMapper objectMapper=new ObjectMapper();
+        LinkedList linkedList = objectMapper.readValue(a, LinkedList.class);
+        linkedList.forEach(x->{
+            LinkedHashMap o= (LinkedHashMap) x;
+            System.out.println(o);
+            System.out.println(o.get("B3"));
+        });
     }
 }

@@ -97,7 +97,6 @@ public class TradeController {
         return new JsonResult(map);
     }
 
-
     /**
      * 创建市价单
      *
@@ -132,11 +131,10 @@ public class TradeController {
      */
     @RequestMapping(value = "/createSLMarketOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult createStopLimitMarketOrder(String userToken, String fxcmAccount, String fxcmPosId, String type, String price) {
+    public JsonResult createStopLimitMarketOrder(String fxcmPosId, String type, String price) {
         if (!isDoubleOrFloat(price)) {
             return new JsonResult("401", "wrong params", null);
         }
-        String userId = userToken;
         String result = tradeService.createSLMarketOrder(fxcmPosId, type, price);
         //TODO
         return new JsonResult(result);
@@ -153,11 +151,11 @@ public class TradeController {
      */
     @RequestMapping(value = "/updateSLMarketOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult updateStopLimitMarketOrder(String userToken, String fxcmAccount, String orderId, String type, String price) {
+    public JsonResult updateStopLimitMarketOrder(String orderId, String type, String price) {
         if (!isDoubleOrFloat(price)) {
             return new JsonResult("401", "wrong params", null);
         }
-        String userId = userToken;
+        
 
         String result = tradeService.updateSLMarketOrder(orderId, type, price);
         return new JsonResult(result);
@@ -172,8 +170,8 @@ public class TradeController {
      */
     @RequestMapping(value = "/deleteSLMarketOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult deleteStopLimitMarketOrder(String userToken, String fxcmAccount, String orderId, String type) {
-        String userId = userToken;
+    public JsonResult deleteStopLimitMarketOrder(String orderId, String type) {
+        
 
         String result = tradeService.deleteSLMarketOrder(orderId, type);
         return new JsonResult(result);
@@ -187,8 +185,8 @@ public class TradeController {
      */
     @RequestMapping(value = "/deleteMarketOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult deleteTrueMarketOrder(String userToken, String fxcmAccount, String fxcmPosID) {
-        String userId = userToken;
+    public JsonResult deleteTrueMarketOrder(String fxcmPosID) {
+        
 
         String result = tradeService.deleteMarketOrder(fxcmPosID);
         return new JsonResult(result);
@@ -201,14 +199,12 @@ public class TradeController {
      */
     @RequestMapping(value = "/deleteAllOpenPositions", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult deleteAllOpenPositions(String userToken, String fxcmAccount) {
-        String userId = userToken;
+    public JsonResult deleteAllOpenPositions() {
 
         String result = tradeService.deleteAllOpenPositions();
         return new JsonResult(result);
 
     }
-
 
     /**
      * 创建挂单
@@ -242,11 +238,10 @@ public class TradeController {
      */
     @RequestMapping(value = "updateEntryOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult updateEntryOrder(String userToken, String fxcmAccount, String orderId, String amount, String price) {
+    public JsonResult updateEntryOrder(String orderId, String amount, String price) {
         if (!isDoubleOrFloat(price, amount)) {
             return new JsonResult("401", "wrong params", null);
         }
-        String userId = userToken;
 
         String result = tradeService.updateEntryOrder(orderId, amount, price);
         return new JsonResult(result);
@@ -260,8 +255,8 @@ public class TradeController {
      */
     @RequestMapping(value = "deleteEntryOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult deleteEntryOrder(String userToken, String fxcmAccount, String orderId) {
-        String userId = userToken;
+    public JsonResult deleteEntryOrder(String orderId) {
+        
 
         String result = tradeService.deleteEntryOrder(orderId);
         return new JsonResult(result);
@@ -274,8 +269,8 @@ public class TradeController {
      */
     @RequestMapping(value = "/deleteAllEntryOrders", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult deleteAllEntryOrders(String userToken, String fxcmAccount) {
-        String userId = userToken;
+    public JsonResult deleteAllEntryOrders() {
+        
 
         String result = tradeService.deleteAllEntryOrders();
         return new JsonResult(result);
@@ -291,11 +286,11 @@ public class TradeController {
      */
     @RequestMapping(value = "/createSLEntryOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult createSLEntryOrder(String userToken, String fxcmAccount, String orderId, String price, String type) {
+    public JsonResult createSLEntryOrder(String orderId, String price, String type) {
         if (!isDoubleOrFloat(price)) {
             return new JsonResult("401", "wrong params", null);
         }
-        String userId = userToken;
+        
 
         String result = tradeService.createSLEntryOrder(orderId, price, type);
         return new JsonResult(result);
@@ -311,11 +306,11 @@ public class TradeController {
      */
     @RequestMapping(value = "/updateSLEntryOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult updateSLEntryOrder(String userToken, String fxcmAccount, String orderId, String type, String price) {
+    public JsonResult updateSLEntryOrder(String orderId, String type, String price) {
         if (!isDoubleOrFloat(price)) {
             return new JsonResult("401", "wrong params", null);
         }
-        String userId = userToken;
+        
         String result = tradeService.updateSLEntryOrder(orderId, type, price);
         return new JsonResult(result);
     }
@@ -329,8 +324,8 @@ public class TradeController {
      */
     @RequestMapping(value = "/deleteSLEntryOrder", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult deleteSLEntryOrder(String userToken, String fxcmAccount, String orderId, String type) {
-        String userId = userToken;
+    public JsonResult deleteSLEntryOrder(String orderId, String type) {
+        
         String result = tradeService.deleteSLEntryOrder(orderId, type);
         return new JsonResult(result);
     }
@@ -339,15 +334,14 @@ public class TradeController {
     /**
      * 修改fxcm账号密码
      *
-     * @param fxcmAccount fxcm登录账号
      * @param password    原密码
      * @param newPassword 新密码
      * @return
      */
     @RequestMapping(value = "/changeFXCMPassword", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult changePassword(String userToken, String fxcmAccount, String password, String newPassword) {
-        String userId = userToken;
+    public JsonResult changePassword(String password, String newPassword) {
+        
         String result = tradeService.changeFXCMPassword(password, newPassword);
         return new JsonResult(result);
     }
@@ -403,15 +397,12 @@ public class TradeController {
 
     /**
      * 登出福汇账号
-     *
-     * @param userToken   userToken
-     * @param fxcmAccount 福汇账号
      * @return logout result
      */
     @RequestMapping(value = "/logoutFXCM", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult logoutFXCM(String userToken, String fxcmAccount) {
-        String userId = userToken;
+    public JsonResult logoutFXCM() {
+        
         String result = tradeService.logoutFXCM();
         return new JsonResult(result);
     }
@@ -459,7 +450,7 @@ public class TradeController {
 
     @RequestMapping(value = "/getOrderExecutionReport")
     @ResponseBody
-    public JsonResult getOrderExecutionReport(String userToken, String fxcmAccount, String listId) {
+    public JsonResult getOrderExecutionReport(String listId) {
         String orderExecutionReport = tradeService.getOrderExecutionReport(listId);
         if (Strings.isNullOrEmpty(orderExecutionReport)) {
             return new JsonResult(null);
@@ -484,6 +475,4 @@ public class TradeController {
         }
         return flag;
     }
-
-
 }

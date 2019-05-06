@@ -119,6 +119,7 @@
 <button id="getClosedPositions">
     获取已平仓位置
 </button>
+<div id="allData"></div>
 <div id="market">
     <div class="datas"
          id="USOil">
@@ -1074,7 +1075,7 @@
     </div>
     <div class="openPositions">
         开仓部位
-        <table class="openPosition"></table>
+        <div class="openPosition"></div>
     </div>
     <div class="closedPositions">
         已平仓部位
@@ -1115,25 +1116,35 @@
         $("#marketOrder .symbol").bind("change", setMarketOrderRate)
         setInterval(doSetOptions, 500)
         $("#accounts .hideAndDisplay").click(doHideAndDisplay)
+        $("#accounts div").css("display", "none")
+        $("#accounts .collateralReports").css("display", "block")
+        $(".openPosition").click(hello)
+
+
     })
 
+    function hello() {
+        console.log($(this).children('td').eq(0).val())
+    }
+
+    //选择显示栏位
     function doHideAndDisplay(e) {
         $("#accounts div").css("display", "none")
         var val = $(this).val();
         $("#accounts ." + val + "").css("display", "block")
     }
 
+    //统一设置各状态信息
     function doSetOptions() {
         var id = $("#accounts .account").val();
-        var collateral = $("#accounts").data("collateralReport");
-        var open = $("#accounts").data("openPosition");
-        var openOrder = $("#accounts").data("openOrder");
-        var close = $("#accounts").data("closedPosition");
+        var collateral = $("#allData").data("collateralReport");
+        var open = $("#allData").data("openPosition");
+        var openOrder = $("#allData").data("openOrder");
+        var close = $("#allData").data("closedPosition");
         setOpenOrderRows(openOrder[id])
         setCollateralReportRows(collateral[id])
         setOpenPostionsRows(open[id])
         setClosedPostionsRows(close[id])
-
     }
 
     function setOpenOrderRows(positions) {
@@ -1196,17 +1207,17 @@
 
     function setOpenPostionsRows(positions) {
         var table = $("#accounts .openPositions .openPosition");
+        console.log(table)
+        console.log("setOpenPositions")
         table.empty();
         $.each(positions, function (key, val) {
-            var tr = ("<tr>" +
-                "<td>" + key + "</td>" +
-                "<td>" + val.position.account + "</td>" +
-                "<td>" + val.position.instrument.symbol + "</td>" +
-                "<td>" + val.position.positionQty.qty + "</td>" +
-                "<td>" + val.position.positionQty.side.desc + "</td>" +
-                "<td>" + val.position.settlPrice + "</td>" +
-                "<td>" + val.position.fxcmusedMargin + "</td>" +
-                "</tr>")
+            var tr = $("<div style='display: inline-block;' class='time'>" + key + "</div>" +
+                "<div style='display: inline-block;' class='time'>" + val.position.account + "</div>" +
+                "<div style='display: inline-block;' class='time'>" + val.position.instrument.symbol + "</div>" +
+                "<div style='display: inline-block;' class='time'>" + val.position.positionQty.qty + "</div>" +
+                "<div style='display: inline-block;' class='time'>" + val.position.positionQty.side.desc + "</div>" +
+                "<div style='display: inline-block;' class='time'>" + val.position.settlPrice + "</div>" +
+                "<div style='display: inline-block;' class='time'>" + val.position.fxcmusedMargin + "</div><br/>")
             table.append(tr);
         })
     }
@@ -1252,7 +1263,6 @@
     function doSetMarketOrderSymbol() {
         var id = this.id;
         var symbol = $("#" + id).data("market").instrument.symbol;
-        // $("#marketOrder .symbol").prop("selected",symbol)
         $("#marketOrder .symbol").val(symbol)
         setMarketOrderRate();
     }
@@ -1264,6 +1274,7 @@
             dataType: "jsonP",
             type: "get",
             success: function (result) {
+                $("#allData").data("marketData", result)
                 doCreatRows(result)
             }
         })
@@ -1277,7 +1288,7 @@
             dataType: "json",
             type: "post",
             success: function (result) {
-                $("#accounts").data("closedPosition", result.data)
+                $("#allData").data("closedPosition", result.data)
             }
         })
     }
@@ -1289,7 +1300,7 @@
             dataType: "json",
             type: "post",
             success: function (result) {
-                $("#accounts").data("openOrder", result.data)
+                $("#allData").data("openOrder", result.data)
             }
         })
     }
@@ -1301,7 +1312,7 @@
             dataType: "json",
             type: "post",
             success: function (result) {
-                $("#accounts").data("collateralReport", result.data)
+                $("#allData").data("collateralReport", result.data)
             }
         })
 
@@ -1316,7 +1327,7 @@
             success: function (result) {
                 // console.log(result.data)
                 doCreateAccountRows(result.data);
-                $("#accounts").data("openPosition", result.data)
+                $("#allData").data("openPosition", result.data)
             }
         })
     }
@@ -1340,14 +1351,11 @@
             }
         }
         return isExist;
-
     }
 
     function deleteSLEntryOrder() {
         var url = "/trade/deleteSLEntryOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "orderId": 104563467,
             "type": "limit"
         }
@@ -1357,8 +1365,6 @@
     function updateSLEntryOrder() {
         var url = "/trade/updateSLEntryOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "orderId": 104563467,
             "type": "limit",
             "price": 1.15
@@ -1369,8 +1375,6 @@
     function createSLEntryOrder() {
         var url = "/trade/createSLEntryOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "orderId": 104563452,
             "type": "stop",
             "price": 0.95
@@ -1380,18 +1384,12 @@
 
     function deleteAllEntryOrders() {
         var url = "/trade/deleteAllEntryOrders.do";
-        var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547
-        }
         sendFxcmRequest(url, param)
     }
 
     function deleteEntryOrder() {
         var url = "/trade/deleteEntryOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "orderId": 104562911
         }
         sendFxcmRequest(url, param)
@@ -1400,8 +1398,6 @@
     function updateEntryOrder() {
         var url = "/trade/updateEntryOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "orderId": 104562911,
             "amount": 1000,
             "price": 1.05,
@@ -1412,8 +1408,6 @@
     function deleteMarketOrder() {
         var url = "/trade/deleteMarketOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "fxcmPosID": 63825945
         }
         sendFxcmRequest(url, param)
@@ -1422,8 +1416,6 @@
     function deleteSLMarketOrder() {
         var url = "/trade/deleteSLMarketOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "orderId": 104560731,
             "type": "limit"
         }
@@ -1433,8 +1425,6 @@
     function updateSLMarketOrder() {
         var url = "/trade/updateSLMarketOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "orderId": 104560731,
             "type": "limit",
             "price": 1.03
@@ -1445,8 +1435,6 @@
     function createSLMarketOrder() {
         var url = "/trade/createSLMarketOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "fxcmPosId": 63825913,
             "type": "limit",
             "price": 1.05
@@ -1458,8 +1446,6 @@
     function loginFXCM() {
         var url = "/trade/loginFXCM.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547,
             "fxcmPassword": 890128
         }
         sendFxcmRequest(url, param)
@@ -1468,10 +1454,6 @@
 
     function deleteAllOpenPositions() {
         var url = "/trade/deleteAllOpenPositions.do";
-        var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": 701116547
-        }
         sendFxcmRequest(url, param)
 
     }
@@ -1503,8 +1485,6 @@
     function createEntryOrder() {
         var url = "/trade/createEntryOrder.do";
         var param = {
-            "userToken": "247F1A35FCA49D6443B489951AA1B877",
-            "fxcmAccount": "701116547",
             "currency": "EUR/USD",
             "price": 1.1,
             "type": "limit",
@@ -1544,7 +1524,7 @@
             $("#" + _key + " .spread").html(((item.askOpen - item.bidOpen) / item.instrument.fxcmsymPointSize).toFixed(2));
             $("#" + _key + " .high_price").html(item.high.toFixed(pointSize));
             $("#" + _key + " .low_price").html(item.low.toFixed(pointSize));
-            $("#" + _key + " .time").html(new Date(item.tickTime.time).getHours() + ":" + ((new Date(item.tickTime.time).getMinutes()).toString().length>1?new Date(item.tickTime.time).getMinutes():("0"+new Date(item.tickTime.time).getMinutes())) + ":" + new Date(item.tickTime.time).getSeconds());
+            $("#" + _key + " .time").html(new Date(item.tickTime.time).getHours() + ":" + ((new Date(item.tickTime.time).getMinutes()).toString().length > 1 ? new Date(item.tickTime.time).getMinutes() : ("0" + new Date(item.tickTime.time).getMinutes())) + ":" + new Date(item.tickTime.time).getSeconds());
 
         })
     }

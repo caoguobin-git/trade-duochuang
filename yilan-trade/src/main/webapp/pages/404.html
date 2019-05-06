@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>404</title>
+<script src="js/jQuery-1.11.3.min.js"></script>
+<link rel="stylesheet" href="js/common.css">
+<link rel="icon" href="img/icon.png">
+<style>
+header{ width:100%;position:relative;}
+#header_con{ width:1920px; height:1080px; background:no-repeat url(../img/404.png); position:absolute; left:50%; top:-50px; margin-left:-960px;}
+#jump{ width:300px; color:#000000; font-size:24px; font-weight:bold; position:absolute;left:50%; top:655px; margin-left:-210px;}
+.number{ display:inline-block;}
+
+</style>
+</head>
+
+<body style="overflow:hidden;">
+<!--header-->
+<header>
+<div id="header_con">
+
+<a id="jump" href="index.html"><p><p class="number">5</p>秒后将跳回首页...</p></a>
+
+</div>
+</header>
+
+<script>
+function fh(){
+	window.open("index.html","_self")
+	}
+	setTimeout("fh()",4000)
+	
+var x = 5;
+setInterval(function(){
+	if(x>1){
+		x = x-1;
+	}else{
+	
+	}
+	$(".number").html(x);
+},800)
+	
+</script>
+
+</body>
+</html>

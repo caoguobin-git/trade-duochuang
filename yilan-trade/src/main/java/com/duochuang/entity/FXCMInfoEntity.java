@@ -7,7 +7,6 @@
 
 package com.duochuang.entity;
 
-import com.duochuang.common.EntityBase;
 
 public class FXCMInfoEntity {
     private String fxcmAccount;

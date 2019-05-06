@@ -64,4 +64,6 @@
 		<aop:pointcut expression="execution(* com.duochuang.service..*.*(..))" id="pc"/>
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="pc"/>
 	</aop:config>
+
+
 </beans>
