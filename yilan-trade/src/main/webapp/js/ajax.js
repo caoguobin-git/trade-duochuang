@@ -191,10 +191,10 @@ function setCollateralReportRows(positions) {
     var table = $("#account_info");
     table.empty();
     var val = positions;
-    var tr = $("<div class='account_account' style='display: inline-block;margin-left: 10px'>" + val.account + "</div>" +
-        "<div class='account_cashOutstanding' style='display: inline-block;margin-left: 10px'>" + val.cashOutstanding + "</div>" +
-        "<div class='account_margin' style='display: inline-block;margin-left: 10px'>" + val.fxcmusedMargin + "</div>" +
-        "<div class='account_margin_left' style='display: inline-block;margin-left: 10px'>" + (val.cashOutstanding - val.fxcmusedMargin) + "</div>")
+    var tr = $("<div class='account_account' style='display: inline-block'>" + val.account + "</div>" +
+        "<div class='account_cashOutstanding' style='display: inline-block'>" + val.cashOutstanding + "</div>" +
+        "<div class='account_margin' style='display: inline-block'>" + val.fxcmusedMargin + "</div>" +
+        "<div class='account_margin_left' style='display: inline-block'>" + (val.cashOutstanding - val.fxcmusedMargin) + "</div>")
     table.append(tr);
 }
 
@@ -289,10 +289,10 @@ function getDateTime(a) {
     var date = new Date(a);
     var result = "";
     result += date.getFullYear() + "/";
-    result += date.getMonth() + 1;
-    result += "/" + date.getDate() + "  ";
-    result += date.getHours() + ":";
-    result += date.getMinutes();
+    result += ((date.getMonth() + 1).toString().length<2?"0"+(date.getMonth() + 1):(date.getMonth() + 1));
+    result += "/" + (date.getDate().toString().length<2?"0"+date.getDate():date.getDate()) + "  ";
+    result += (date.getHours().toString().length<2?"0"+date.getHours():date.getHours()) + ":";
+    result += (date.getMinutes().toString().length<2?"0"+date.getMinutes():date.getMinutes());
     return result;
 }
 
@@ -492,7 +492,7 @@ function createEntryOrder() {
 
 function sendFxcmRequest(url, param) {
     $.ajax({
-        url: url,
+        url: url+"?time="+new Date().getTime(),
         data: param,
         type: "post",
         success: function (result) {
