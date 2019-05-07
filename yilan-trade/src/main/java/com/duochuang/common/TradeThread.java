@@ -453,8 +453,6 @@ public class TradeThread implements Runnable {
          * 1.外汇乘以100000 取1000的整数倍
          * 2.黄金/白银 取factor的整数倍
          */
-        System.out.println(currency);
-        System.out.println(collateralReport.getAccount()+"    "+marketDataSnapshotMap.keySet());
         MarketDataSnapshot marketDataSnapshot = marketDataSnapshotMap.get(currency);
         int product = marketDataSnapshot.getInstrument().getProduct();
         int factor = marketDataSnapshot.getInstrument().getFactor();
@@ -496,6 +494,7 @@ public class TradeThread implements Runnable {
         primary.setClOrdLinkID(IFixDefs.CLORDLINKID_PRIMARY);
         orderList.addOrder(primary);
 
+        System.out.println(amount+" "+side+" "+currency+" "+secondary);
         if (stop != 0) {
             OrderSingle stopOrder = MessageGenerator.generateStopLimitEntry(
                     stop,

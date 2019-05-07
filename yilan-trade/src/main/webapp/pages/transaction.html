@@ -266,7 +266,7 @@
             </div>
             <div class="datas"
                  id="HKG33">
-                <div class="symbol"></div>
+                <div class="symbol">HKG33</div>
                 <div class="sell_price"></div>
                 <div class="buy_price"></div>
                 <div class="spread"></div>
@@ -1219,7 +1219,7 @@
             deleteSLMarketOrder(orderId, "limit")
         }
 
-        console.log(stop_check + "  " + limit_check)
+        console.log("stop:"+stop_check + "  limit:" + limit_check)
 
         //2.判断数值是否变化
     }
@@ -1232,7 +1232,9 @@
         $("#stop_limit_market_box").show()
         var stop = $("#set_stop_limit_market").data("stop");
         var limit = $("#set_stop_limit_market").data("limit");
-        $("#set_stop_limit_market checkbox").prop("checked", false)
+        console.log("stop:"+stop+"  limit:"+limit)
+        $("#set_stop_limit_market .stop_check").prop("checked", false)
+        $("#set_stop_limit_market .limit_check").prop("checked", false)
         $("#set_stop_limit_market .stop_price").val("")
         $("#set_stop_limit_market .limit_price").val("")
 
@@ -1333,7 +1335,6 @@
             $("#set_stop_limit_market").data("symbol", symbol)
             var stop = $(this).children(".open_position_stop").html()
             var limit = $(this).children(".open_position_limit").html()
-            console.log(stop + "   " + limit)
             $("#set_stop_limit_market").data("stop", stop)
             $("#set_stop_limit_market").data("limit", limit)
 
