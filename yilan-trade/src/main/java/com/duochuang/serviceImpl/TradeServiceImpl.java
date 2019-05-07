@@ -213,7 +213,6 @@ public class TradeServiceImpl implements TradeService {
         return "删除全部挂单成功";
     }
 
-
     @Override
     public String createSLEntryOrder(String orderId, String price, String type) {
         TradeThread tradeThread = tradeThreadList.get(0);
@@ -224,7 +223,6 @@ public class TradeServiceImpl implements TradeService {
         }
         return secondary;
     }
-
 
     @Override
     public String updateSLEntryOrder(String orderId, String type, String price) {
@@ -237,7 +235,6 @@ public class TradeServiceImpl implements TradeService {
 
         return secondary;
     }
-
 
     @Override
     public String deleteSLEntryOrder(String orderId, String type) {

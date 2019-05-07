@@ -34,10 +34,11 @@ header{ width:100%; height:100%; overflow:hidden;}
 
 #account_info div{ width:120px; height:40px; line-height:40px; text-align:center; float:left;}
 #order_list div>div{ width:120px; height:40px; line-height:40px; text-align:center; float:left;}
-#open_list div>div{width:120px; height:40px; line-height:40px; text-align:center; display: inline-block;}
-#open_list div{
-    height: 40px;
-}
+#open_list div>div{width:120px;text-align:center; display: inline-block;}
+#open_list>div{
+    border-bottom: 1px solid #F0F0F0;}
+
+
 #closed_list div{width:120px; height:40px; line-height:40px; text-align:center; display: inline-block;}
 
 .account{ width:100%; height:400px; overflow:auto;}
@@ -72,11 +73,26 @@ header{ width:100%; height:100%; overflow:hidden;}
 #open_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
 #openOrder{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
 
-
+.open_position{
+    width:100%;height:20px;display: block;
+}
 /*nav*/
 #left_nav{ width:40px; height:1050px; position:absolute; top:0px; left:0px; z-index:99; overflow:hidden;}
 #leftnav_con{ width:40px; height:1050px; background:#FFFFFF; position:absolute; top:0px; left:-40px;}
 
+
+
+/*delete_box*/
+#delete_market_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
+#delete_position{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
+#delete_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
+#delete_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
+
+/*stop*/
+#stop_limit_market_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
+#set_stop_limit_market{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
+#stop_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
+#stop_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
 
 
 

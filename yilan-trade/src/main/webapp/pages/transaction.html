@@ -775,7 +775,7 @@
 
         <div id="cont_ricon">
             <div class="account">
-                <span><b>账号：</b><b>余额</b><b>保证金要求</b><b>可用保证金</b></span>
+                <span><b>账号：</b><b>余额</b><b>占用保证金</b><b>可用保证金</b></span>
                 <div id="account_info">
                 </div>
             </div>
@@ -784,7 +784,7 @@
                 <div id="order_list"></div>
             </div>
             <div class="open">
-                <span><b>成交单据</b><b>账号</b><b>商品组合</b><b>数量</b><b>卖/买</b><b>开市价</b><b>止损</b><b>限价</b><b>保证金要求</b><b>时间</b></span>
+                <span><b>成交单据</b><b>账号</b><b>商品组合</b><b>数量</b><b>卖/买</b><b>开市价</b><b>关闭价格</b><b>止损</b><b>限价</b><b>盈亏/点数</b><b>保证金要求</b><b>时间</b></span>
                 <div id="open_list"></div>
             </div>
             <div class="closed">
@@ -795,9 +795,9 @@
 
         <!--开仓弹窗-->
         <div id="open_window">
-            <p>
-                止损/现价...</p>
-            <p>
+            <p id="set_stop_limit_market_btn">
+                止损/限价...</p>
+            <p id="delete_market_click">
                 平仓...</p>
             <p id="closeAllPositions">
                 全部平仓...</p>
@@ -1048,19 +1048,18 @@
                    value="stop"
                    class="stop_check">止损<input
                 type="text"
-                class="stop_price"><span
-                class="stop_rate"></span><input
-                type="text"
-                class="rate">
+                class="stop_price">
+            <span
+                    class="stop_rate"></span>
+
             <br>
             <input type="checkbox"
                    value="limit"
                    class="limit_check">止盈<input
                 type="text"
-                class="limit_price"><span
-                class="limit_rate"></span><input
-                type="text"
-                class="rate">
+                class="limit_price">
+            <span
+                    class="limit_rate"></span>
             <br>
             <button id="createRealMarketOrder">
                 创建市价单
@@ -1069,16 +1068,67 @@
         </div>
     </div>
 
-    <div id="open_box">
-        <div id="openOrder">
 
+    <div id="delete_market_box">
+        <div id="delete_position">
+            <b id="delete_title">平仓部位<span>×</span></b>
+            成交单据<input
+                class="position_id"
+                type="text">
+            数量<input
+                type="text"
+                class="position_quantity">
+            汇率<input
+                class="position_rate"
+                type="text">
+            <button id="cancle_delete_position">
+                取消
+            </button>
+            <button id="confirm_delete_position">
+                确定
+            </button>
+        </div>
+    </div>
+
+    <div id="stop_limit_market_box">
+        <div id="set_stop_limit_market">
+            <b id="stop_title">止损/限价<span>×</span></b>
+            成交单据<input
+                type="text"
+                class="position_id">
+            止损<input
+                type="checkbox"
+                style="display: inline-block"
+                class="stop_check">
+            <input type="text"
+                   class="stop_price"
+                   style="display: inline-block">
+            <span
+                    class="current_rate_stop"></span>
+            <br/>
+            限价<input
+                type="checkbox"
+                style="display: inline-block;"
+                class="limit_check">
+            <input type="text"
+                   class="limit_price"
+                   style="display: inline-block;">
+            <span
+                    class="current_rate_limit"></span>
+            <br/>
+            <button id="cancle_stop_limit_market">
+                取消
+            </button>
+            <button id="confirm_stop_limit_market">
+                确定
+            </button>
         </div>
     </div>
 
     <div id="left_nav">
         <div id="leftnav_con">
-            <p>
-                11</p>
+            <p id="load_trade_page">
+                交易</p>
             <p>
                 22</p>
         </div>
@@ -1107,16 +1157,84 @@
         $("#getOpenOrders").click(getOpenOrders)
         $("#getClosedPositions").click(getClosedPositions)
         $("#createRealMarketOrder").click(createMarketOrder)
-        $("#closeAllPositions").click(deleteAllOpenPositions)
         setInterval(getMarketDataSnapshot, 500)
         setInterval(getCollateralReport, 500)
         setInterval(getOpenOrders, 500)
         setInterval(getOpenPositions, 500)
         setInterval(getClosedPositions, 500)
         setInterval(doSetMarketOrder, 50)
-        setInterval(doSetOptions,5000)
+        setInterval(doSetOptions, 2000)
         $(".datas").click(doSomeThing)
+        $("#closeAllPositions").click(confirmDeleteAllOpenPositions)
+        $("#open_list").on("mousedown", ".open_position", close_market_order)
+        $("#confirm_delete_position").click(deleteMarketOrder)
+        $("#set_stop_limit_market_btn").click(doSetStopLimitMarket)
+        $("#cancle_stop_limit_market").click(hideSetStopLimitMarket)
+        $("#confirm_stop_limit_market").click(sendStopLimitMarket)
     })
+
+    function sendStopLimitMarket() {
+        $("#stop_limit_market_box").hide()
+        //1.判断是否选中
+        var positionID=$("#set_stop_limit_market .position_id").val();
+        console.log(positionID)
+        var stop_check = $("#set_stop_limit_market .stop_check").prop("checked");
+        var limit_check=$("#set_stop_limit_market .limit_check").prop("checked");
+        var pre_stop=$("#set_stop_limit_market").data("stop");
+        var pre_limit=$("#set_stop_limit_market").data("limit");
+        var stop_price=$("#set_stop_limit_market .stop_price").val();
+        var limit_price=$("#set_stop_limit_market .limit_price").val();
+        console.log("之前止盈"+pre_limit)
+        console.log(pre_stop)
+        if (stop_check){
+            if ("null"==pre_stop){
+                createSLMarketOrder(positionID,"stop",stop_price)
+            }else {
+                if (pre_stop!=stop_price){
+                    var orderId=$("#"+positionID).children("stop_order_id").text();
+                    updateSLMarketOrder(orderId,"stop",stop_price);
+                }
+            }
+        }
+        if (limit_check){
+            if ("null"==pre_limit){
+                createSLMarketOrder(positionID,"limit",limit_price)
+            }else {
+                if (pre_limit!=limit_price){
+                    var orderId=$("#"+positionID).children("limit_order_id").text();
+                    updateSLMarketOrder(orderId,"limit",limit_price);
+                }
+            }
+        }
+
+        console.log(stop_check+"  "+limit_check)
+
+        //2.判断数值是否变化
+    }
+    function hideSetStopLimitMarket() {
+        $("#stop_limit_market_box").hide()
+    }
+
+    function doSetStopLimitMarket() {
+        $("#stop_limit_market_box").show()
+        var stop = $("#set_stop_limit_market").data("stop");
+        var limit = $("#set_stop_limit_market").data("limit");
+        $("#set_stop_limit_market checkbox").attr("checked", false)
+        $("#set_stop_limit_market .stop_price").val("")
+        $("#set_stop_limit_market .limit_price").val("")
+
+
+        if ("null" != stop) {
+            //1.设置选中状态
+            $("#set_stop_limit_market .stop_check").attr("checked", true)
+            $("#set_stop_limit_market .stop_price").val(stop)
+        }
+        if ("null" != limit) {
+            $("#set_stop_limit_market .limit_check").attr("checked", true)
+            $("#set_stop_limit_market .limit_price").val(limit)
+        }
+        $("#open_window").hide();
+    }
 
     //nav
     $("#left_nav").mouseenter(
@@ -1132,6 +1250,10 @@
     $("#Market_click").click(
         function () {
             $("#Market_box").show();
+            $("#marketOrder .stop_price").val($("#marketOrder .stop_rate").text().substring(1))
+            $("#marketOrder .limit_price").val($("#marketOrder .limit_rate").text().substring(1))
+            $("#marketOrder .amount").val("")
+            $("#marketOrder input:checkbox").attr("checked", false)
             $("#top_window").hide();
         })
 
@@ -1152,6 +1274,9 @@
     $("#top_window").hide();
     $("#open_window").hide();
     $("#list_window").hide();
+    $("#delete_market_box").hide();
+
+    $("#stop_limit_market_box").hide();
 
     $(function () {
         $(".datas").mousedown(test)
@@ -1160,33 +1285,65 @@
         }
     })
 
+
     function test(e) {
         if (e.which == 3) {
+            if ($(this).attr("id") != null) {
+                $("#marketOrder .symbol").val($(this).children(".symbol").html())
+            }
             $("#open_window").hide();
             $("#list_window").hide();
             $("#top_window").show();
+            $("#top_window").css("left", document.body.scrollLeft + event.clientX + 20);
+            $("#top_window").css("top", document.body.scrollLeft + event.clientY - 80);
+            $(this).addClass("datas_ground");
+            $(this).siblings().removeClass("datas_ground");
+        }
+        if (e.which==1){
             $(this).addClass("datas_ground");
             $(this).siblings().removeClass("datas_ground");
         }
     }
 
-    $('.open').mousedown(function (e) {
+
+    function close_market_order(e) {
         if (e.which == 3) {
-            $("#open_window").show();
+            var position = $(this).attr("id");
+            var quantity = $(this).children(".position_quantity").html()
+            var symbol = $(this).children(".position_instrument").html();
+            var side = $(this).children(".position_side").html();
+            $("#delete_position .position_quantity").val(quantity)
+            $("#delete_position .position_id").val(position)
+
+            $("#set_stop_limit_market .position_id").val(position)
+            $("#set_stop_limit_market").data("side", side)
+            $("#set_stop_limit_market").data("symbol", symbol)
+            var stop = $(this).children(".open_position_stop").html()
+            var limit = $(this).children(".open_position_limit").html()
+            console.log(stop + "   " + limit)
+            $("#set_stop_limit_market").data("stop", stop)
+            $("#set_stop_limit_market").data("limit", limit)
+
+
+
+            $("#delete_position").data("side", side)
+            $("#delete_position").data("symbol", symbol)
             $("#top_window").hide();
             $("#list_window").hide();
-        } else if (e.which == 1) {
-
-        } else if (e.which == 2) {
-
+            $("#open_window").show();
+            $("#open_window").css("left", document.body.scrollLeft + event.clientX + 20);
+            $("#open_window").css("top", document.body.scrollLeft + event.clientY - 520);
         }
-    })
+    }
+
 
     $('.list').mousedown(function (e) {
         if (e.which == 3) {
             $("#list_window").show();
             $("#top_window").hide();
             $("#open_window").hide();
+            $("#list_window").css("left", document.body.scrollLeft + event.clientX + 20);
+            $("#list_window").css("top", document.body.scrollLeft + event.clientY - 520);
         } else if (e.which == 1) {
 
         } else if (e.which == 2) {
@@ -1280,8 +1437,6 @@
             $(this).siblings().addClass("cont_rititcolor2");
             $(this).siblings().removeClass("cont_rititcolor1");
         })
-
-
 </script>
 
 </body>

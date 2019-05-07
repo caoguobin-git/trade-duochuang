@@ -6,43 +6,41 @@
         Title</title>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
 
+    <style>
+        div {
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
-<div id="test">dianji
-    <div class="hell"></div>
+<div id="7584584">
+    <div>
+        时间
+    </div>
+    <div>
+        价格
+    </div>
+    <div>
+        单位
+    </div>
 </div>
 </body>
 </html>
 <script>
     $(function () {
-        $("#test").mousedown(test)
-        document.oncontextmenu = function(e){
-            return false;
-        }
+
+        setInterval(function () {
+            var aaa=$("#7584584");
+            var x=$("<div class='pospspspsp'>dianjiceshi</div><div>23145234</div><br/>")
+            aaa.append(x)
+        },3000)
+        $("#7584584").on("click",".pospspspsp",helloaa)
     })
-    function test(e) {
-        console.log(e)
-        if (e.which==1){
-            console.log("点击了左键")
-            hahah();
-        }
-        if(e.which == 3){
-           console.log("点击了右键")
-            delete1();
-        }
+    function helloaa() {
+        console.log("jajajajaj")
     }
-    function delete1() {
-        $(".hell div:last-child").remove();
-    }
-    function hahah() {
-        var tr = $("<div style='display: inline-block;' class='time'>123</div>" +
-            "<div style='display: inline-block;background: blue;width: 100px;height: 100px;' class='time'>123" + "</div>" +
-            "<div style='display: inline-block;background: blue;width: 100px;height: 100px;' class='time'>123</div>" +
-            "<div style='display: inline-block;background: blue;width: 100px;height: 100px;' class='time'>123</div>" +
-            "<div style='display: inline-block;background: blue;width: 100px;height: 100px;' class='time'>123</div>" +
-            "<div style='display: inline-block;background: blue;width: 100px;height: 100px;' class='time'>123</div>" +
-            "<div style='display: inline-block;background: blue;width: 100px;height: 100px;' class='time'>"+new Date()+"</div><br/>")
-        $("#test .hell").append(tr)
-    }
+
+
+
 
 </script>
