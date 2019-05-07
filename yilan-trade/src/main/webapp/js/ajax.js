@@ -329,7 +329,7 @@ function deleteSLEntryOrder() {
 function confirmDeleteAllOpenPositions() {
     $("#open_window").hide();
 
-    if (confirm("确定关闭所有仓位吗？")) {
+    if (confirm("所有跟单号码中相关仓位也将关闭！\n确定关闭所有仓位吗？")) {
         deleteAllOpenPositions();
     }
 }
