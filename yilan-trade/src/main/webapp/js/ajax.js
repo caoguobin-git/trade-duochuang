@@ -250,10 +250,9 @@ function setOpenPostionsRows(positions) {
             "<div>" + val.position.fxcmusedMargin + "</div>" +
             "<div>" + getDateTime(val.position.fxcmposOpenTime.time) + "</div>" +
             "</div>")
-        console.log(key)
-        console.log($("#"+key))
-
         table.append(tr);
+        //append之后才能查询到
+        // console.log($("#"+key+" .stop_order_id").text())
     })
 }
 
@@ -399,13 +398,11 @@ function deleteMarketOrder() {
     sendFxcmRequest(url, param)
 }
 
-function deleteSLMarketOrder() {
+function deleteSLMarketOrder(orderId,type) {
     var url = "/trade/deleteSLMarketOrder.do";
     var param = {
-        "userToken": "247F1A35FCA49D6443B489951AA1B877",
-        "fxcmAccount": 701116547,
-        "orderId": 104560731,
-        "type": "limit"
+        "orderId": orderId,
+        "type": type
     }
     sendFxcmRequest(url, param)
 }

@@ -1176,41 +1176,54 @@
     function sendStopLimitMarket() {
         $("#stop_limit_market_box").hide()
         //1.判断是否选中
-        var positionID=$("#set_stop_limit_market .position_id").val();
+        var positionID = $("#set_stop_limit_market .position_id").val();
         console.log(positionID)
         var stop_check = $("#set_stop_limit_market .stop_check").prop("checked");
-        var limit_check=$("#set_stop_limit_market .limit_check").prop("checked");
-        var pre_stop=$("#set_stop_limit_market").data("stop");
-        var pre_limit=$("#set_stop_limit_market").data("limit");
-        var stop_price=$("#set_stop_limit_market .stop_price").val();
-        var limit_price=$("#set_stop_limit_market .limit_price").val();
-        console.log("之前止盈"+pre_limit)
+        var limit_check = $("#set_stop_limit_market .limit_check").prop("checked");
+        var pre_stop = $("#set_stop_limit_market").data("stop");
+        var pre_limit = $("#set_stop_limit_market").data("limit");
+        var stop_price = $("#set_stop_limit_market .stop_price").val();
+        var limit_price = $("#set_stop_limit_market .limit_price").val();
+        console.log("之前止盈" + pre_limit)
         console.log(pre_stop)
-        if (stop_check){
-            if ("null"==pre_stop){
-                createSLMarketOrder(positionID,"stop",stop_price)
-            }else {
-                if (pre_stop!=stop_price){
-                    var orderId=$("#"+positionID).children("stop_order_id").text();
-                    updateSLMarketOrder(orderId,"stop",stop_price);
+        if (stop_check) {
+            if ("null" == pre_stop) {
+                createSLMarketOrder(positionID, "stop", stop_price)
+            } else {
+                if (pre_stop != stop_price) {
+                    var orderId = $("#" + positionID + " .stop_order_id").text();
+                    console.log(orderId)
+                    updateSLMarketOrder(orderId, "stop", stop_price);
                 }
             }
+        } else {
+            //取消点选的情况 如果之前设置了 则清空
+            if ("null" != pre_stop) {
+                var orderId = $("#" + positionID + " .stop_order_id").text();
+
+                deleteSLMarketOrder(orderId, "stop")
+            }
+
         }
-        if (limit_check){
-            if ("null"==pre_limit){
-                createSLMarketOrder(positionID,"limit",limit_price)
-            }else {
-                if (pre_limit!=limit_price){
-                    var orderId=$("#"+positionID).children("limit_order_id").text();
-                    updateSLMarketOrder(orderId,"limit",limit_price);
+        if (limit_check) {
+            if ("null" == pre_limit) {
+                createSLMarketOrder(positionID, "limit", limit_price)
+            } else {
+                if (pre_limit != limit_price) {
+                    var orderId = $("#" + positionID + " .limit_order_id").text();
+                    updateSLMarketOrder(orderId, "limit", limit_price);
                 }
             }
+        } else {
+            var orderId = $("#" + positionID + " .limit_order_id").text();
+            deleteSLMarketOrder(orderId, "limit")
         }
 
-        console.log(stop_check+"  "+limit_check)
+        console.log(stop_check + "  " + limit_check)
 
         //2.判断数值是否变化
     }
+
     function hideSetStopLimitMarket() {
         $("#stop_limit_market_box").hide()
     }
@@ -1219,18 +1232,18 @@
         $("#stop_limit_market_box").show()
         var stop = $("#set_stop_limit_market").data("stop");
         var limit = $("#set_stop_limit_market").data("limit");
-        $("#set_stop_limit_market checkbox").attr("checked", false)
+        $("#set_stop_limit_market checkbox").prop("checked", false)
         $("#set_stop_limit_market .stop_price").val("")
         $("#set_stop_limit_market .limit_price").val("")
 
 
         if ("null" != stop) {
             //1.设置选中状态
-            $("#set_stop_limit_market .stop_check").attr("checked", true)
+            $("#set_stop_limit_market .stop_check").prop("checked", true)
             $("#set_stop_limit_market .stop_price").val(stop)
         }
         if ("null" != limit) {
-            $("#set_stop_limit_market .limit_check").attr("checked", true)
+            $("#set_stop_limit_market .limit_check").prop("checked", true)
             $("#set_stop_limit_market .limit_price").val(limit)
         }
         $("#open_window").hide();
@@ -1299,7 +1312,7 @@
             $(this).addClass("datas_ground");
             $(this).siblings().removeClass("datas_ground");
         }
-        if (e.which==1){
+        if (e.which == 1) {
             $(this).addClass("datas_ground");
             $(this).siblings().removeClass("datas_ground");
         }
@@ -1323,7 +1336,6 @@
             console.log(stop + "   " + limit)
             $("#set_stop_limit_market").data("stop", stop)
             $("#set_stop_limit_market").data("limit", limit)
-
 
 
             $("#delete_position").data("side", side)
