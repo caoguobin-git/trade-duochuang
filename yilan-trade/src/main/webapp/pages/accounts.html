@@ -214,6 +214,7 @@
         $("#confirm_save_new_account").click(saveNewAccount)
         $("#save_new_account_title span").click(hideSaveNewAccountBox)
         $("#account_list").on("click",".delete_account",deleteAccountById)
+        findAllAccounts();
     })
 
     function deleteAccountById() {
