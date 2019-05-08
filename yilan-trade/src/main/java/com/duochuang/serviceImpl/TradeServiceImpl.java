@@ -167,12 +167,13 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public String createEntryOrder(String price, String type, String amount, String side, String currency, String stop, String limit) {
         TradeThread tradeThread = tradeThreadList.get(0);
+        double cashOutstanding = tradeThread.getCollateralReport().getCashOutstanding();
 
         String secondary = tradeThread.getFxcmInfoEntity().getFxcmAccount() + new Date().getTime();
-        String result = tradeThread.createEntryOrder(price, type, amount, side, currency, stop, limit, secondary);
+        String result = tradeThread.createEntryOrder(cashOutstanding,price, type, amount, side, currency, stop, limit, secondary);
 
         for (int i = 1; i < tradeThreadList.size(); i++) {
-            tradeThreadList.get(i).createEntryOrder(price, type, amount, side, currency, stop, limit, secondary);
+            tradeThreadList.get(i).createEntryOrder(cashOutstanding,price, type, amount, side, currency, stop, limit, secondary);
         }
         return result;
     }
@@ -180,11 +181,12 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public String updateEntryOrder(String orderId, String amount, String price) {
         TradeThread tradeThread = tradeThreadList.get(0);
+        double cashOutstanding = tradeThread.getCollateralReport().getCashOutstanding();
 
-        String secondary = tradeThread.updateEntryOrder(orderId, amount, price, null);
+        String secondary = tradeThread.updateEntryOrder(cashOutstanding,orderId, amount, price, null);
 
         for (int i = 1; i < tradeThreadList.size(); i++) {
-            tradeThreadList.get(i).updateEntryOrder(amount, price, secondary);
+            tradeThreadList.get(i).updateEntryOrder(cashOutstanding,amount, price, secondary);
         }
         return secondary;
     }

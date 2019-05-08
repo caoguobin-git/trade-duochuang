@@ -2,6 +2,34 @@
 //请求
 
 
+function doSetCreateOrder() {
+    var symbol = $("#create_order .symbol").val();
+    symbol = symbol.replace("/", "");
+    var side;
+    var rate;
+    var amount = $("#create_order .amount").val();
+    side = $('input[name="side"]:checked').val();
+    var rate;
+    if ("sell" == side) {
+
+        var stop_rate = $("#" + symbol).data("market").askOpen.toFixed($("#" + symbol).data("market").instrument.fxcmsymPrecision);
+        var limit_rate = $("#" + symbol).data("market").bidOpen.toFixed($("#" + symbol).data("market").instrument.fxcmsymPrecision);
+        $(".stop_rate").html(">" + stop_rate)
+        $(".limit_rate").html("<" + limit_rate)
+
+        rate = limit_rate;
+
+    } else if ("buy" == side) {
+        var stop_rate = $("#" + symbol).data("market").bidOpen.toFixed($("#" + symbol).data("market").instrument.fxcmsymPrecision);
+        var limit_rate = $("#" + symbol).data("market").askOpen.toFixed($("#" + symbol).data("market").instrument.fxcmsymPrecision);
+        $(".stop_rate").html("<" + stop_rate)
+        $(".limit_rate").html(">" + limit_rate)
+
+        rate = limit_rate;
+    }
+    $("#create_order .rate").val(rate)
+}
+
 function doSetMarketOrder() {
     var symbol = $("#marketOrder .symbol").val();
     symbol = symbol.replace("/", "");
@@ -48,19 +76,8 @@ function doSetDeletePositionRate() {
 
 }
 
-$("#delete_market_box").hide();
-$("#delete_market_click").click(
-    function () {
-        $("#delete_market_box").show();
-        $("#open_window").hide();
-    })
 
 $("#open_title span").click(
-    function () {
-        $("#delete_market_box").hide();
-    })
-
-$("#cancle_delete_position").click(
     function () {
         $("#delete_market_box").hide();
     })
@@ -134,12 +151,29 @@ function doSetOptions() {
     var open = $("#allData").data("openPosition");
     var openOrder = $("#allData").data("openOrder");
     var close = $("#allData").data("closedPosition");
-    setOpenPostionsRows(open[id])
-    setOpenOrderRows(openOrder[id])
-    setCollateralReportRows(collateral[id])
-    setClosedPostionsRows(close[id])
+    setOpenPostionsRows(open[id]);
+    setOpenOrderRows(openOrder[id]);
+    setCollateralReportRows(collateral[id]);
+    setClosedPostionsRows(close[id]);
     doSetDeletePositionRate();
-    doSetStopLimitMarketRate()
+    doSetStopLimitMarketRate();
+}
+
+function doSetCreateOrderRate() {
+    var side = $('#create_order input[name="side"]:checked').val();
+    console.log(side)
+
+    var expect_rate = $("#create_order .expect_rate").val();
+    console.log(expect_rate)
+    if ("sell" == side) {
+        $("#create_order .order_stop_rate").html(">" + expect_rate);
+        $("#create_order .order_limit_rate").html("<" + expect_rate);
+    } else {
+        $("#create_order .order_stop_rate").html("<" + expect_rate);
+        $("#create_order .order_limit_rate").html(">" + expect_rate);
+    }
+
+
 }
 
 function doSetStopLimitMarketRate() {
@@ -149,7 +183,6 @@ function doSetStopLimitMarketRate() {
         return;
     }
     side = side.toLowerCase();
-
 
     symbol = symbol.replace("/", "");
 
@@ -176,12 +209,26 @@ function setOpenOrderRows(positions) {
     table.empty();
     $.each(positions, function (key, val) {
         var tr = $(
-            "<div ><div>" + val.mainOrder.orderID + "</div>" +
+            "<div id='" + key + "'  class='open_order'>" +
+            "<div class='open_order_id'>" + val.mainOrder.orderID + "</div>" +
             "<div>" + val.mainOrder.account + "</div>" +
             "<div >" + val.mainOrder.fxcmordType.code + "</div>" +
             "<div>" + val.mainOrder.fxcmordStatus.label + "</div>" +
             "<div>" + val.mainOrder.instrument.symbol + "</div>" +
-            "<div>" + val.mainOrder.leavesQty + "</div><div>"
+            "<div class='open_order_amount'>" + (("4" == val.mainOrder.instrument.product) ? (val.mainOrder.leavesQty / 100000) : val.mainOrder.leavesQty) + "</div>" +
+            "<div class='open_order_side'>" + val.mainOrder.side.desc + "</div>" +
+            "<div class='open_order_price'>" + val.mainOrder.price + "</div>" +
+            "<div class='open_order_stop_price'>" + (val.stop == null ? "null" : val.stop.price) + "</div>" +
+            "<div class='open_order_stop_id' style='display: none'>" + (val.stop == null ? "" : val.stop.orderID) + "</div>" +
+
+            "<div class='open_order_limit_price'>" + (val.limit == null ? "null" : val.limit.price) + "</div>" +
+
+            "<div class='open_order_limit_id' style='display: none'>" + (val.limit == null ? "" : val.limit.orderID) + "</div>" +
+
+
+
+            "<div>" + getDateTime(val.mainOrder.transactTime.time) + "</div>" +
+            "<div>"
         )
         table.append(tr);
     })
@@ -237,7 +284,7 @@ function setOpenPostionsRows(positions) {
             "<div class='position_id'>" + key + "</div>" +
             "<div>" + val.position.account + "</div>" +
             "<div class='position_instrument'>" + val.position.instrument.symbol + "</div>" +
-            "<div class='position_quantity'>" + val.position.positionQty.qty + "</div>" +
+            "<div class='position_quantity'>" + (("4"==val.position.instrument.product) ? (val.position.positionQty.qty / 100000) : val.position.positionQty.qty) + "</div>" +
             "<div class='position_side'>" + val.position.positionQty.side.desc + "</div>" +
             "<div>" + val.position.settlPrice.toFixed(val.position.instrument.fxcmsymPrecision) + "</div>" +
             "<div>" + getPositionPrice(val.position.instrument.symbol, val.position.positionQty.side.desc) + "</div>" +
@@ -289,10 +336,10 @@ function getDateTime(a) {
     var date = new Date(a);
     var result = "";
     result += date.getFullYear() + "/";
-    result += ((date.getMonth() + 1).toString().length<2?"0"+(date.getMonth() + 1):(date.getMonth() + 1));
-    result += "/" + (date.getDate().toString().length<2?"0"+date.getDate():date.getDate()) + "  ";
-    result += (date.getHours().toString().length<2?"0"+date.getHours():date.getHours()) + ":";
-    result += (date.getMinutes().toString().length<2?"0"+date.getMinutes():date.getMinutes());
+    result += ((date.getMonth() + 1).toString().length < 2 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1));
+    result += "/" + (date.getDate().toString().length < 2 ? "0" + date.getDate() : date.getDate()) + "  ";
+    result += (date.getHours().toString().length < 2 ? "0" + date.getHours() : date.getHours()) + ":";
+    result += (date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes());
     return result;
 }
 
@@ -317,11 +364,11 @@ function isOptionExist(select, key) {
     return isExist;
 }
 
-function deleteSLEntryOrder() {
+function deleteSLEntryOrder(orderId,type) {
     var url = "/trade/deleteSLEntryOrder.do";
     var param = {
-        "orderId": 104563467,
-        "type": "limit"
+        "orderId": orderId,
+        "type": type
     }
     sendFxcmRequest(url, param)
 }
@@ -334,26 +381,22 @@ function confirmDeleteAllOpenPositions() {
     }
 }
 
-function updateSLEntryOrder() {
+function updateSLEntryOrder(orderId,type,price) {
     var url = "/trade/updateSLEntryOrder.do";
     var param = {
-        "userToken": "247F1A35FCA49D6443B489951AA1B877",
-        "fxcmAccount": 701116547,
-        "orderId": 104563467,
-        "type": "limit",
-        "price": 1.15
+        "orderId": orderId,
+        "type": type,
+        "price": price
     }
     sendFxcmRequest(url, param)
 }
 
-function createSLEntryOrder() {
+function createSLEntryOrder(orderId,type,price) {
     var url = "/trade/createSLEntryOrder.do";
     var param = {
-        "userToken": "247F1A35FCA49D6443B489951AA1B877",
-        "fxcmAccount": 701116547,
-        "orderId": 104563452,
-        "type": "stop",
-        "price": 0.95
+        "orderId": orderId,
+        "type": type,
+        "price": price
     }
     sendFxcmRequest(url, param)
 }
@@ -367,24 +410,20 @@ function deleteAllEntryOrders() {
     sendFxcmRequest(url, param)
 }
 
-function deleteEntryOrder() {
+function deleteEntryOrder(orderId) {
     var url = "/trade/deleteEntryOrder.do";
     var param = {
-        "userToken": "247F1A35FCA49D6443B489951AA1B877",
-        "fxcmAccount": 701116547,
-        "orderId": 104562911
+        "orderId": orderId
     }
     sendFxcmRequest(url, param)
 }
 
-function updateEntryOrder() {
+function updateEntryOrder(orderid,amount,price) {
     var url = "/trade/updateEntryOrder.do";
     var param = {
-        "userToken": "247F1A35FCA49D6443B489951AA1B877",
-        "fxcmAccount": 701116547,
-        "orderId": 104562911,
-        "amount": 1000,
-        "price": 1.05,
+        "orderId": orderid,
+        "amount": amount,
+        "price": price,
     }
     sendFxcmRequest(url, param)
 }
@@ -398,7 +437,7 @@ function deleteMarketOrder() {
     sendFxcmRequest(url, param)
 }
 
-function deleteSLMarketOrder(orderId,type) {
+function deleteSLMarketOrder(orderId, type) {
     var url = "/trade/deleteSLMarketOrder.do";
     var param = {
         "orderId": orderId,
@@ -450,6 +489,47 @@ function deleteAllOpenPositions() {
 
 }
 
+function createEntryOrder() {
+    var url = "/trade/createEntryOrder.do";
+    var stop_price = 0;
+    var limit_price = 0;
+    if ($("#create_order .stop_check").prop("checked")) {
+        stop_price = $("#create_order .stop_price").val();
+        console.log("stop_price:" + stop_price)
+    }
+    if ($("#create_order .limit_check").prop("checked")) {
+        limit_price = $("#create_order .limit_price").val();
+        console.log("limit price:" + limit_price)
+    }
+    var type = "";
+    var current_rate = $("#create_order .rate").val()
+    var expect_rate = $("#create_order .expect_rate").val()
+    if ("sell" == $('input[name="side"]:checked').val()) {
+        if (expect_rate < current_rate) {
+            type = "stop";
+        } else {
+            type = "limit";
+        }
+    } else {
+        if (expect_rate < current_rate) {
+            type = "limit";
+        } else {
+            type = "stop";
+        }
+    }
+    var param = {
+        "currency": $("#create_order .symbol").val(),
+        "side": $('input[name="side"]:checked').val(),
+        "amount": $("#create_order .amount").val(),
+        "price": $("#create_order .expect_rate").val(),
+        "type": type,
+        "stop": stop_price,
+        "limit": limit_price
+    }
+    console.log(param)
+    sendFxcmRequest(url, param);
+}
+
 function createMarketOrder() {
     var url = "/trade/createMarketOrder.do";
     var stop_price = 0;
@@ -474,25 +554,10 @@ function createMarketOrder() {
     sendFxcmRequest(url, param);
 }
 
-function createEntryOrder() {
-    var url = "/trade/createEntryOrder.do";
-    var param = {
-        "userToken": "247F1A35FCA49D6443B489951AA1B877",
-        "fxcmAccount": "701116547",
-        "currency": "EUR/USD",
-        "price": 1.1,
-        "type": "limit",
-        "amount": 1000,
-        "side": "buy",
-        "stop": 0,
-        "limit": 0
-    }
-    sendFxcmRequest(url, param);
-}
 
 function sendFxcmRequest(url, param) {
     $.ajax({
-        url: url+"?time="+new Date().getTime(),
+        url: url + "?time=" + new Date().getTime(),
         data: param,
         type: "post",
         success: function (result) {

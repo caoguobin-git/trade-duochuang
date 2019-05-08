@@ -9,7 +9,7 @@ header{ width:100%; height:100%; overflow:hidden;}
 #tran_title b{color:#AAB2B7; display:block; width:120px; font-size:12px; text-align:center;}
 #tran_title span{ color:#000000; display:block; width:120px; font-size:12px; text-align:center;}
 
-#cont_top{ width:45%; height:410px; margin-bottom:30px; background:#FFFFFF; position:relative;}
+#cont_top{ width:100%; height:410px; margin-bottom:30px; background:#FFFFFF; position:relative;}
 #cont_title{ width:1920px; height:28px; background:#FFF; border-bottom:solid 2px #e8e7e7;}
 #cont_title b{ width:120px; height:28px; font-size:14px; text-align:center; font-weight:bold; line-height:28px; display:block; float:left;}
 #cont_con{ width:99%; height:380px; overflow :auto;}
@@ -33,9 +33,12 @@ header{ width:100%; height:100%; overflow:hidden;}
 #cont_ricon b{ width: 120px;color:#AAB2B7; height: 40px; line-height: 40px; text-align: center; display: block; float: left;}
 
 #account_info div{ width:120px; height:40px; line-height:40px; text-align:center; float:left;}
-#order_list div>div{ width:120px; height:40px; line-height:40px; text-align:center; float:left;}
+#order_list div>div{ width:120px;text-align:center;
+    display: inline-block;}
 #open_list div>div{width:120px;text-align:center; display: inline-block;}
 #open_list>div{
+    border-bottom: 1px solid #F0F0F0;}
+#order_list>div{
     border-bottom: 1px solid #F0F0F0;}
 
 
@@ -61,14 +64,6 @@ header{ width:100%; height:100%; overflow:hidden;}
 #list_window p{width:160px; padding:0px 10px 0px 10px; height:30px; line-height:30px; color:rgba(0,0,0,0.80); cursor:pointer;}
 #list_window p:hover{ background:#F0F0F0;}
 
-/*Market*/
-#Market_box{ width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
-#marketOrder{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
-#marketOrder input{ display:inline-block; margin:5px;}
-#market_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
-#market_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
-#createRealMarketOrder{ width:160px;height:40px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:block;text-align:center;line-height:40px; cursor:pointer; margin: 30px auto 30px;}
-
 /*open_box*/
 #open_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
 #openOrder{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
@@ -76,23 +71,75 @@ header{ width:100%; height:100%; overflow:hidden;}
 .open_position{
     width:100%;height:20px;display: block;
 }
+.open_order{
+    width:100%;height:20px;display: block;
+
+}
 /*nav*/
 #left_nav{ width:40px; height:1050px; position:absolute; top:0px; left:0px; z-index:99; overflow:hidden;}
 #leftnav_con{ width:40px; height:1050px; background:#FFFFFF; position:absolute; top:0px; left:-40px;}
 
 
 
+/*Market*/
+#Market_box{ width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
+#marketOrder{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
+.symbol{ width:174px; height:20px;}
+#marketOrder input{ display:inline-block; margin:5px;}
+#market_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
+#market_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
+#createRealMarketOrder{ width:160px;height:40px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:block;text-align:center;line-height:40px; cursor:pointer; margin: 30px auto 30px; border-radius:5px;}
+
 /*delete_box*/
 #delete_market_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
 #delete_position{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
 #delete_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
 #delete_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
+#delete_position input{ display:inline-block; margin:5px;}
+#delete_position p{ width:100%; display:block; border-bottom:1px solid #F0F0F0; margin:20px 0px 20px 0px;}
+#cancle_delete_position{width:60px;height:30px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:30px; cursor:pointer; margin:10px 5px 10px 320px; border-radius:5px;}
+#confirm_delete_position{width:60px;height:30px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:30px; cursor:pointer; margin:10px 0px 10px 5px; border-radius:5px;}
 
 /*stop*/
 #stop_limit_market_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
 #set_stop_limit_market{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
 #stop_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
 #stop_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
+#set_stop_limit_market input{ display:inline-block; margin:5px;}
+#set_stop_limit_market p{width:100%; display:block; border-bottom:1px solid #F0F0F0; margin:20px 0px 20px 0px;}
+#cancle_stop_limit_market{width:60px;height:30px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:30px; cursor:pointer; margin:10px 5px 10px 320px; border-radius:5px;}
+#confirm_stop_limit_market{width:60px;height:30px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:30px; cursor:pointer; margin:10px 0px 10px 5px; border-radius:5px;}
 
+
+/*创建挂单*/
+#order_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
+#create_order{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
+#create_order input{ display:inline-block; margin:5px;}
+#create_order p{width:100%; display:block; border-bottom:1px solid #F0F0F0; margin:20px 0px 20px 0px;}
+
+#order_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
+#order_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
+#cancle_create_order{    float: left;width:160px;height:40px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:40px; cursor:pointer; margin: 30px auto 30px; border-radius:5px;}
+#confirm_create_order{    float: right;width:160px;height:40px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:40px; cursor:pointer; margin: 30px auto 30px; border-radius:5px;}
+
+
+/*更改挂单*/
+#update_entry_order_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
+#update_entry_order{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
+#update_entry_order input{ display:block; margin:5px;}
+#update_order_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
+#update_order_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
+#cancle_update_order{float: left;width:160px;height:40px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:40px; cursor:pointer; margin: 30px auto 30px; border-radius:5px;}
+#confirm_update_order{float: right;width:160px;height:40px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:40px; cursor:pointer; margin: 30px auto 30px; border-radius:5px;}
+
+/*挂单止盈止损*/
+#stop_limit_entry_order_box{width:100%; height:1050px; background:rgba(0,0,0,0.80); position:absolute; z-index:10; top:0px; left:0px;}
+#stop_limit_entry_order{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
+#stop_limit_entry_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
+#stop_limit_entry_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}
+#stop_limit_entry_order input{ display:inline-block; margin:5px;}
+#stop_limit_entry_order p{width:100%; display:block; border-bottom:1px solid #F0F0F0; margin:20px 0px 20px 0px;}
+#cancle_stop_limit_entry{width:60px;height:30px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:30px; cursor:pointer; margin:10px 5px 10px 320px; border-radius:5px;}
+#confirm_stop_limit_entry{width:60px;height:30px;background:#2291cd;border:none;font-size:16px;color:#fff;outline:none;text-decoration:none;display:inline-block;text-align:center;line-height:30px; cursor:pointer; margin:10px 0px 10px 5px; border-radius:5px;}
 
 

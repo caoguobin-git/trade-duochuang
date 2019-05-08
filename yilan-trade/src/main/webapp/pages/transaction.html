@@ -10,8 +10,8 @@
           href="../js/common.css">
     <link rel="icon"
           href="../img/icon.png">
+    <script src="../js/jQuery-1.11.3.min.js"></script>
     <script src="../js/ajax.js"></script>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
 
 </head>
 
@@ -266,7 +266,9 @@
             </div>
             <div class="datas"
                  id="HKG33">
-                <div class="symbol">HKG33</div>
+                <div class="symbol">
+                    HKG33
+                </div>
                 <div class="sell_price"></div>
                 <div class="buy_price"></div>
                 <div class="spread"></div>
@@ -749,7 +751,7 @@
 
         <!--左边弹窗-->
         <div id="top_window">
-            <p>
+            <p id="showCreateOrderBox">
                 建立挂单...</p>
             <p id="Market_click">
                 建立市价单...</p>
@@ -780,7 +782,7 @@
                 </div>
             </div>
             <div class="list">
-                <span><b>订单ID</b><b>账号</b><b>单据...</b><b>状态</b><b>商品组合</b><b>手数</b></span>
+                <span><b>订单ID</b><b>账号</b><b>单据...</b><b>状态</b><b>商品组合</b><b>手数</b><b>卖出/买进</b><b>价格</b><b>止损</b><b>限价</b><b>时间</b></span>
                 <div id="order_list"></div>
             </div>
             <div class="open">
@@ -805,11 +807,11 @@
 
         <!--挂单弹窗-->
         <div id="list_window">
-            <p>
+            <p id="show_update_entry_order">
                 更改挂单...</p>
-            <p>
+            <p id="show_stop_limit_entry_box">
                 止损/现价...</p>
-            <p>
+            <p id="deleteEntryOrderById">
                 取消挂单...</p>
             <p id="deleteAllEntryOrders">
                 取消所有挂单
@@ -1072,15 +1074,20 @@
     <div id="delete_market_box">
         <div id="delete_position">
             <b id="delete_title">平仓部位<span>×</span></b>
-            成交单据<input
+            成交单据:<input
                 class="position_id"
                 type="text">
-            数量<input
+            <br/>
+            数量:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input
                 type="text"
                 class="position_quantity">
-            汇率<input
+            <br/>
+
+            汇率:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input
                 class="position_rate"
                 type="text">
+            <br/>
+
             <button id="cancle_delete_position">
                 取消
             </button>
@@ -1096,6 +1103,7 @@
             成交单据<input
                 type="text"
                 class="position_id">
+            <br/>
             止损<input
                 type="checkbox"
                 style="display: inline-block"
@@ -1125,6 +1133,311 @@
         </div>
     </div>
 
+
+    <div id="order_box">
+        <div id="create_order">
+            <b id="order_title">建立挂单<span>×</span></b>
+            交易币种：
+            <select class="symbol">
+                <option>
+                    USOil
+                </option>
+                <option>
+                    AUD/JPY
+                </option>
+                <option>
+                    NZD/CAD
+                </option>
+                <option>
+                    EUR/CAD
+                </option>
+                <option>
+                    USD/ZAR
+                </option>
+                <option>
+                    AUS200
+                </option>
+                <option>
+                    UKOil
+                </option>
+                <option>
+                    EUR/NOK
+                </option>
+                <option>
+                    NGAS
+                </option>
+                <option>
+                    EUR/AUD
+                </option>
+                <option>
+                    USD/HKD
+                </option>
+                <option>
+                    EUSTX50
+                </option>
+                <option>
+                    GBP/CAD
+                </option>
+                <option>
+                    USD/CAD
+                </option>
+                <option>
+                    GER30
+                </option>
+                <option>
+                    CAD/CHF
+                </option>
+                <option>
+                    EUR/TRY
+                </option>
+                <option>
+                    USD/TRY
+                </option>
+                <option>
+                    Copper
+                </option>
+                <option>
+                    HKG33
+                </option>
+                <option>
+                    GBP/AUD
+                </option>
+                <option>
+                    ETH/USD
+                </option>
+                <option>
+                    NAS100
+                </option>
+                <option>
+                    EUR/CHF
+                </option>
+                <option>
+                    TRY/JPY
+                </option>
+                <option>
+                    AUD/NZD
+                </option>
+                <option>
+                    USD/CHF
+                </option>
+                <option>
+                    XAU/USD
+                </option>
+                <option>
+                    FRA40
+                </option>
+                <option>
+                    AUD/USD
+                </option>
+                <option>
+                    NZD/JPY
+                </option>
+                <option>
+                    USD/MXN
+                </option>
+                <option>
+                    USDOLLAR
+                </option>
+                <option>
+                    CHN50
+                </option>
+                <option>
+                    ESP35
+                </option>
+                <option>
+                    EUR/NZD
+                </option>
+                <option>
+                    ZAR/JPY
+                </option>
+                <option>
+                    GBP/CHF
+                </option>
+                <option>
+                    NZD/USD
+                </option>
+                <option>
+                    USD/JPY
+                </option>
+                <option>
+                    GBP/NZD
+                </option>
+                <option>
+                    SPX500
+                </option>
+                <option>
+                    CHF/JPY
+                </option>
+                <option>
+                    UK100
+                </option>
+                <option>
+                    CORNF
+                </option>
+                <option>
+                    EUR/USD
+                </option>
+                <option>
+                    SOYF
+                </option>
+                <option>
+                    WHEATF
+                </option>
+                <option>
+                    GBP/USD
+                </option>
+                <option>
+                    EUR/JPY
+                </option>
+                <option>
+                    AUD/CHF
+                </option>
+                <option>
+                    EUR/GBP
+                </option>
+                <option>
+                    XAG/USD
+                </option>
+                <option>
+                    US30
+                </option>
+                <option>
+                    GBP/JPY
+                </option>
+                <option>
+                    NZD/CHF
+                </option>
+                <option>
+                    LTC/USD
+                </option>
+                <option>
+                    USD/NOK
+                </option>
+                <option>
+                    US2000
+                </option>
+                <option>
+                    CAD/JPY
+                </option>
+                <option>
+                    BTC/USD
+                </option>
+                <option>
+                    AUD/CAD
+                </option>
+                <option>
+                    Bund
+                </option>
+                <option>
+                    USD/SEK
+                </option>
+                <option>
+                    EUR/SEK
+                </option>
+                <option>
+                    USD/CNH
+                </option>
+                <option>
+                    JPN225
+                </option>
+            </select>
+            <br>
+            卖出/买进<input
+                type="radio"
+                name="side"
+                value="sell"
+                checked="checked">卖出
+            <input type="radio"
+                   name="side"
+                   value="buy">买入
+            <br>
+            交易数量：<input
+                type="number"
+                class="amount">
+            <br>
+            期望汇率：<input
+                type="text"
+                class="expect_rate">
+            <br>
+            当前汇率：<input
+                type="text"
+                class="rate">
+            <br>
+
+            <input type="checkbox"
+                   value="stop"
+                   class="stop_check">止损<input
+                type="text"
+                class="stop_price">
+            <span
+                    class="order_stop_rate"></span>
+
+            <br>
+            <input type="checkbox"
+                   value="limit"
+                   class="limit_check">止盈<input
+                type="text"
+                class="limit_price">
+            <span
+                    class="order_limit_rate"></span>
+            <br>
+            <button id="cancle_create_order">
+                取消
+            </button>
+            <button id="confirm_create_order">
+                确定
+            </button>
+
+        </div>
+    </div>
+    <div id="deleteEntryOrder"
+         style="display: none;"></div>
+
+    <div id="update_entry_order_box">
+        <div id="update_entry_order">
+            <b id="update_order_title">更改挂单<span>×</span></b>
+            挂单编号：<input
+                type="text"
+                class="update_order_id">
+            数量：<input
+                type="text"
+                class="update_order_amount">
+            汇率：<input
+                type="text"
+                class="update_order_rate">
+            <button id="cancle_update_order">
+                取消
+            </button>
+            <button id="confirm_update_order">
+                确定
+            </button>
+        </div>
+    </div>
+    <div id="stop_limit_entry_order_box">
+        <div id="stop_limit_entry_order">
+            <b id="stop_limit_entry_title">止损/限价<span>x</span></b>
+            挂单编号：<input type="text" class="stop_limit_entry_id">
+            <br/>
+            <input type="checkbox"
+                   class="stop_check">止损
+            <input type="text"
+                   class="stop_price"><span
+                class="stop_current_rate"></span>
+            <br/>
+            <input type="checkbox"
+                   class="limit_check">限价
+            <input type="text"
+                   class="limit_price"><span
+                class="limit_current_rate"></span>
+            <button id="cancle_stop_limit_entry">
+                取消
+            </button>
+            <button id="confirm_stop_limit_entry">
+                确定
+            </button>
+        </div>
+    </div>
+
     <div id="left_nav">
         <div id="leftnav_con">
             <p id="load_trade_page">
@@ -1149,21 +1462,21 @@
         $("#createEntryOrder").click(createEntryOrder)
         $("#updateEntryOrder").click(updateEntryOrder)
         $("#deleteEntryOrder").click(deleteEntryOrder)
-        $("#deleteAllEntryOrders").click(deleteAllEntryOrders)
+        $("#deleteAllEntryOrders").click(confirmDeleteAllEntryOrders)
         $("#createSLEntryOrder").click(createSLEntryOrder)
         $("#updateSLEntryOrder").click(updateSLEntryOrder)
         $("#deleteSLEntryOrder").click(deleteSLEntryOrder)
         $("#getOpenPositions").click(getOpenPositions)
         $("#getOpenOrders").click(getOpenOrders)
         $("#getClosedPositions").click(getClosedPositions)
-        $("#createRealMarketOrder").click(createMarketOrder)
         setInterval(getMarketDataSnapshot, 500)
         setInterval(getCollateralReport, 500)
         setInterval(getOpenOrders, 500)
         setInterval(getOpenPositions, 500)
         setInterval(getClosedPositions, 500)
         setInterval(doSetMarketOrder, 50)
-        setInterval(doSetOptions, 2000)
+        setInterval(doSetCreateOrder, 50)
+        setInterval(doSetOptions, 500)
         $(".datas").click(doSomeThing)
         $("#closeAllPositions").click(confirmDeleteAllOpenPositions)
         $("#open_list").on("mousedown", ".open_position", close_market_order)
@@ -1171,7 +1484,171 @@
         $("#set_stop_limit_market_btn").click(doSetStopLimitMarket)
         $("#cancle_stop_limit_market").click(hideSetStopLimitMarket)
         $("#confirm_stop_limit_market").click(sendStopLimitMarket)
+        $("#delete_market_click").click(showDeleteMarketBox)
+        $("#cancle_delete_position").click(hideDeleteMarketBox)
+        $("#delete_title span").click(hideDeleteMarketBox)
+        $("#createRealMarketOrder").click(createMarketOrder)
+        $("#showCreateOrderBox").click(showCreateOrderBox)
+        $("#cancle_create_order").click(hideCreateOrederBox)
+        $("#confirm_create_order").click(confirmCreateEntryOrder)
+        $("#create_order .expect_rate").bind("input propertychange", doSetCreateOrderRate)
+        $("#order_list").on("mousedown", ".open_order", setEntryOrder)
+        $("#deleteEntryOrderById").click(deleteEntryOrderById)
+        $("#show_update_entry_order").click(showUpdateEntryOrderBox)
+        $("#cancle_update_order").click(hideUpdateEntryOrderBox)
+        $("#update_order_title span").click(hideUpdateEntryOrderBox)
+        $("#confirm_update_order").click(confirmUpdateEntryOrder)
+
+        $("#show_stop_limit_entry_box").click(showStopLimitEntryBox)
+        $("#cancle_stop_limit_entry").click(hideStopLimitEntryBox)
+        $("#stop_limit_entry_title span").click(hideStopLimitEntryBox)
+        $("#confirm_stop_limit_entry").click(sendStopLimitEntryOrder)
     })
+
+
+    function sendStopLimitEntryOrder() {
+        $("#stop_limit_entry_order_box").hide();
+        var orderId=$("#stop_limit_entry_order .stop_limit_entry_id").val()
+        var posid=$("#stop_limit_entry_order").data("posid")
+        var pre_stop=$("#stop_limit_entry_order").data("stop")
+        var pre_limit=$("#stop_limit_entry_order").data("limit")
+        var stop_check=$("#stop_limit_entry_order .stop_check").prop("checked")
+        var limit_check=$("#stop_limit_entry_order .limit_check").prop("checked")
+        var stop_price=$("#stop_limit_entry_order .stop_price").val()
+        var limit_price=$("#stop_limit_entry_order .limit_price").val()
+        if (stop_check){
+            if("null"==pre_stop){
+                createSLEntryOrder(orderId,"stop",stop_price)
+            }else{
+                if (pre_stop!=stop_price){
+                    var stop_order_id=$("#"+posid+" .open_order_stop_id").text()
+                    console.log(stop_order_id)
+                    updateSLEntryOrder(stop_order_id,"stop",stop_price)
+                }
+            }
+        }else {
+            if ("null"!=pre_stop){
+                var stop_order_id=$("#"+posid+" .open_order_stop_id").text()
+                deleteSLEntryOrder(stop_order_id,"stop")
+            }
+        }
+
+        if (limit_check){
+            if("null"==pre_limit){
+                createSLEntryOrder(orderId,"limit",limit_price)
+            }else{
+                if (pre_limit!=limit_price){
+                    var limit_order_id=$("#"+posid+" .open_order_limit_id").text()
+                    console.log(limit_order_id)
+                    updateSLEntryOrder(limit_order_id,"limit",limit_price)
+                }
+            }
+        }else {
+            if ("null"!=pre_limit){
+                var limit_order_id=$("#"+posid+" .open_order_limit_id").text()
+                deleteSLEntryOrder(limit_order_id,"limit")
+            }
+        }
+    }
+
+    function hideStopLimitEntryBox() {
+        $("#stop_limit_entry_order_box").hide()
+    }
+    function showStopLimitEntryBox() {
+        $("#stop_limit_entry_order_box").show();
+        var price=$("#stop_limit_entry_order").data("price")
+        var side=$("#stop_limit_entry_order").data("side")
+        var stop=$("#stop_limit_entry_order").data("stop")
+        var limit=$("#stop_limit_entry_order").data("limit")
+        if ("sell"==side){
+            $("#stop_limit_entry_order .stop_current_rate").html(">"+price)
+            $("#stop_limit_entry_order .limit_current_rate").html("<"+price)
+        } else {
+            $("#stop_limit_entry_order .stop_current_rate").html("<"+price)
+            $("#stop_limit_entry_order .limit_current_rate").html(">"+price)
+        }
+        $("#stop_limit_entry_order .stop_check").prop("checked", false)
+        $("#stop_limit_entry_order .limit_check").prop("checked", false)
+        $("#stop_limit_entry_order .stop_price").val("")
+        $("#stop_limit_entry_order .limit_price").val("")
+
+
+
+        if ("null"!=stop){
+            $("#stop_limit_entry_order .stop_check").prop("checked",true)
+            $("#stop_limit_entry_order .stop_price").val(stop)
+
+        }
+        if ("null"!=limit){
+            $("#stop_limit_entry_order .limit_check").prop("checked",true)
+            $("#stop_limit_entry_order .limit_price").val(limit)
+
+        }
+
+
+    }
+    function confirmUpdateEntryOrder() {
+        hideUpdateEntryOrderBox();
+        var orderId = $("#update_entry_order .update_order_id").val();
+        var amount = $("#update_entry_order .update_order_amount").val();
+        var price = $("#update_entry_order .update_order_rate").val();
+        updateEntryOrder(orderId, amount, price)
+    }
+
+    function showUpdateEntryOrderBox() {
+        $("#update_entry_order_box").show()
+    }
+
+    function hideUpdateEntryOrderBox() {
+        $("#update_entry_order_box").hide()
+
+    }
+
+    function deleteEntryOrderById() {
+        $("#list_window").hide();
+        var id = $("#deleteEntryOrder").data("id");
+        if (confirm("确定要取消" + id + "的挂单吗？")) {
+            deleteEntryOrder(id);
+        }
+    }
+
+    function confirmDeleteAllEntryOrders() {
+        $("#list_window").hide()
+        if (confirm("确定要取消所有挂单吗？")) {
+            deleteAllEntryOrders();
+        }
+    }
+
+    function confirmCreateEntryOrder() {
+        hideCreateOrederBox();
+        createEntryOrder();
+    }
+
+    function hideCreateOrederBox() {
+        $("#order_box").hide()
+    }
+
+    function showCreateOrderBox() {
+        $("#create_order .amount").val("")
+        $("#create_order .expect_rate").val("")
+        $("#create_order .stop_price").val("")
+        $("#create_order .limit_price").val("")
+        $("#create_order .order_stop_rate").val("")
+        $("#create_order .order_limit_rate").val("")
+        $("#create_order .stop_check").prop("checked", false)
+        $("#create_order .limit_check").prop("checked", false)
+        $("#order_box").show()
+    }
+
+    function hideDeleteMarketBox() {
+        $("#delete_market_box").hide();
+    }
+
+    function showDeleteMarketBox() {
+        $("#delete_market_box").show()
+        $("#open_window").hide();
+    }
+
 
     function sendStopLimitMarket() {
         $("#stop_limit_market_box").hide()
@@ -1200,10 +1677,8 @@
             //取消点选的情况 如果之前设置了 则清空
             if ("null" != pre_stop) {
                 var orderId = $("#" + positionID + " .stop_order_id").text();
-
                 deleteSLMarketOrder(orderId, "stop")
             }
-
         }
         if (limit_check) {
             if ("null" == pre_limit) {
@@ -1219,9 +1694,7 @@
             deleteSLMarketOrder(orderId, "limit")
         }
 
-        console.log("stop:"+stop_check + "  limit:" + limit_check)
-
-        //2.判断数值是否变化
+        console.log("stop:" + stop_check + "  limit:" + limit_check)
     }
 
     function hideSetStopLimitMarket() {
@@ -1232,7 +1705,7 @@
         $("#stop_limit_market_box").show()
         var stop = $("#set_stop_limit_market").data("stop");
         var limit = $("#set_stop_limit_market").data("limit");
-        console.log("stop:"+stop+"  limit:"+limit)
+        console.log("stop:" + stop + "  limit:" + limit)
         $("#set_stop_limit_market .stop_check").prop("checked", false)
         $("#set_stop_limit_market .limit_check").prop("checked", false)
         $("#set_stop_limit_market .stop_price").val("")
@@ -1262,6 +1735,7 @@
 
     //上弹窗
     $("#Market_box").hide();
+    $("#order_box").hide();
     $("#Market_click").click(
         function () {
             $("#Market_box").show();
@@ -1290,8 +1764,10 @@
     $("#open_window").hide();
     $("#list_window").hide();
     $("#delete_market_box").hide();
+    $("#stop_limit_entry_order_box").hide();
 
     $("#stop_limit_market_box").hide();
+    $("#update_entry_order_box").hide();
 
     $(function () {
         $(".datas").mousedown(test)
@@ -1305,6 +1781,7 @@
         if (e.which == 3) {
             if ($(this).attr("id") != null) {
                 $("#marketOrder .symbol").val($(this).children(".symbol").html())
+                $("#create_order .symbol").val($(this).children(".symbol").html())
             }
             $("#open_window").hide();
             $("#list_window").hide();
@@ -1320,6 +1797,38 @@
         }
     }
 
+    function setEntryOrder(e) {
+        if (e.which == 3) {
+            var id = $(this).attr("id");
+            var orderId = $("#" + id + " .open_order_id").text()
+            var amount = $("#" + id + " .open_order_amount").text()
+            var price = $("#" + id + " .open_order_price").text()
+            var side=$("#"+id+" .open_order_side").text()
+            side=side.toLowerCase();
+            console.log(price + " " + amount + " " + orderId)
+            $("#deleteEntryOrder").data("id", orderId)
+            $("#update_entry_order .update_order_id").val(orderId)
+            $("#update_entry_order .update_order_id").attr("disabled", "disabled")
+            $("#update_entry_order ")
+            $("#update_entry_order .update_order_amount").val(amount)
+            $("#update_entry_order .update_order_rate").val(price)
+
+            var stop=$("#"+id+" .open_order_stop_price").html()
+            var limit=$("#"+id+" .open_order_limit_price").html()
+
+
+            $("#stop_limit_entry_order .stop_limit_entry_id").val(orderId)
+            $("#stop_limit_entry_order .stop_limit_entry_id").attr("disabled", "disabled")
+            $("#stop_limit_entry_order").data("side",side)
+            $("#stop_limit_entry_order").data("price",price)
+            $("#stop_limit_entry_order").data("stop",stop)
+            $("#stop_limit_entry_order").data("limit",limit)
+            $("#stop_limit_entry_order").data("posid",id)
+
+
+            console.log($("#deleteEntryOrder").data("id"))
+        }
+    }
 
     function close_market_order(e) {
         if (e.which == 3) {

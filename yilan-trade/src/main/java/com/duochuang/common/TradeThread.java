@@ -672,7 +672,12 @@ public class TradeThread implements Runnable {
      * @param secondary 交易secondaryId
      * @return
      */
+    @Deprecated
     public String createEntryOrder(String price, String type, String amount, String side, String currency, String secondary) {
+
+
+
+
         double price1 = Double.parseDouble(price);
         IOrdType ordType = null;
         if ("limit".equalsIgnoreCase(type)) {
@@ -721,11 +726,27 @@ public class TradeThread implements Runnable {
      * @param secondary secondaryId
      * @return secondaryId
      */
-    public String createEntryOrder(String price, String type, String amount, String side, String currency, String stop, String limit, String secondary) {
-        double price1 = Double.parseDouble(price);
+    public String createEntryOrder(double cashOutStanding,String price, String type, String amount, String side, String currency, String stop, String limit, String secondary) {
+
+        double amount1 = Double.parseDouble(amount);
         double stopPrice = Double.parseDouble(stop);
         double limitPrice = Double.parseDouble(limit);
-        Double amount1 = Double.parseDouble(amount);
+        MarketDataSnapshot marketDataSnapshot = marketDataSnapshotMap.get(currency);
+        int product = marketDataSnapshot.getInstrument().getProduct();
+        int factor = marketDataSnapshot.getInstrument().getFactor();
+        if (product==2){
+            amount1=getBullionAmount(cashOutStanding,amount1,factor);
+        }else if (product==4){
+            amount1=getForexAmount(cashOutStanding,amount1);
+        }
+
+        if (amount1<=0){
+            return null;
+        }
+
+
+        double price1 = Double.parseDouble(price);
+
         IOrdType ordType = null;
         if ("limit".equalsIgnoreCase(type)) {
             ordType = OrdTypeFactory.LIMIT;
@@ -801,15 +822,44 @@ public class TradeThread implements Runnable {
      * @param secondary secondary标识
      * @return secondaryId
      */
-    public String updateEntryOrder(String orderId, String amount, String price, String secondary) {
+    public String updateEntryOrder(double cashOutStanding,String orderId, String amount, String price, String secondary) {
+
+
+        double amount1 = Double.parseDouble(amount);
+
+
+
         ExecutionReport executionReport = null;
         for (Map.Entry<String, OrderEntity> entry : openOrderMap.entrySet()) {
             if (orderId.equalsIgnoreCase(entry.getValue().getMainOrder().getOrderID())) {
                 executionReport = entry.getValue().getMainOrder();
             }
         }
+
+        if (executionReport==null){
+            return "请用主账号下单！";
+        }
+        String currency= null;
+        try {
+            currency = executionReport.getInstrument().getSymbol();
+        } catch (NotDefinedException e) {
+            e.printStackTrace();
+        }
+        MarketDataSnapshot marketDataSnapshot = marketDataSnapshotMap.get(currency);
+        int product = marketDataSnapshot.getInstrument().getProduct();
+        int factor = marketDataSnapshot.getInstrument().getFactor();
+        if (product==2){
+            amount1=getBullionAmount(cashOutStanding,amount1,factor);
+        }else if (product==4){
+            amount1=getForexAmount(cashOutStanding,amount1);
+        }
+
+        if (amount1<=0){
+            return null;
+        }
+
         secondary = executionReport.getSecondaryClOrdID();
-        updateEntryMethod(amount, price, secondary, executionReport);
+        updateEntryMethod(String.valueOf(amount1), price, secondary, executionReport);
         return secondary;
 
     }
@@ -821,7 +871,12 @@ public class TradeThread implements Runnable {
      * @param secondary secondaryId
      * @return secondaryId
      */
-    public String updateEntryOrder(String amount, String price, String secondary) {
+    public String updateEntryOrder(double cashOutStanding,String amount, String price, String secondary) {
+
+        double amount1 = Double.parseDouble(amount);
+
+
+
         if (Strings.isNullOrEmpty(secondary)) {
             return null;
         }
@@ -845,7 +900,29 @@ public class TradeThread implements Runnable {
                 continue;
             }
         }
-        return updateEntryMethod(amount, price, secondary, executionReport);
+        if (executionReport==null){
+            return "请用主账号下单";
+        }
+        String currency= null;
+        try {
+            currency = executionReport.getInstrument().getSymbol();
+        } catch (NotDefinedException e) {
+            e.printStackTrace();
+        }
+        MarketDataSnapshot marketDataSnapshot = marketDataSnapshotMap.get(currency);
+        int product = marketDataSnapshot.getInstrument().getProduct();
+        int factor = marketDataSnapshot.getInstrument().getFactor();
+        if (product==2){
+            amount1=getBullionAmount(cashOutStanding,amount1,factor);
+        }else if (product==4){
+            amount1=getForexAmount(cashOutStanding,amount1);
+        }
+
+        if (amount1<=0){
+            return null;
+        }
+
+        return updateEntryMethod(String.valueOf(amount1), price, secondary, executionReport);
     }
 
     /**
