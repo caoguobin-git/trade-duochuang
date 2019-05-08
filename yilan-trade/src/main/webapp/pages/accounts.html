@@ -4,8 +4,321 @@
     <meta charset="UTF-8">
     <title>
         账户管理</title>
+    <script src="../js/jQuery-1.11.3.min.js"></script>
+    <link rel="stylesheet"
+          href="../style/buttons.css">
+    <style>
+        #save_new_account_box {
+            width: 100%;
+            height: 1050px;
+            background: rgba(0, 0, 0, 0.80);
+            position: absolute;
+            z-index: 10;
+            top: 0px;
+            left: 0px;
+        }
+
+        #save_new_account {
+            width: 480px;
+            height: 360px;
+            padding: 20px;
+            background: #FFFFFF;
+            font-size: 14px;
+            position: absolute;
+            top: 300px;
+            left: 50%;
+            margin-left: -240px;
+            z-index: 11;
+        }
+
+        #save_new_account_title {
+            width: 100%;
+            height: 50px;
+            font-size: 30px;
+            text-align: center;
+            display: block;
+        }
+
+        #save_new_account_title span {
+            display: inline-block;
+            float: right;
+            text-align: center;
+            font-size: 35px;
+        }
+
+        #save_new_account input {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        #cancle_save_new_account {
+            margin-left: 20%
+        }
+
+        .table_head {
+            display: inline-block;
+        }
+
+        #account_list div {
+            display: inline-block;
+        }
+
+        #account_list > div {
+            display: block;
+            border-bottom: 1px solid rgba(92, 92, 92, 0.36);
+
+        }
+
+        #account_head {
+            display: block;
+            border-bottom: 1px solid rgba(92, 92, 92, 0.36);
+            border-top: 1px solid rgba(92, 92, 92, 0.36);
+
+        }
+
+        #account_head > div {
+            text-align: center;
+            border-right: 1px solid rgba(92, 92, 92, 0.36);
+            padding: 0px 10px 0px 10px;
+        }
+
+        #account_list div > div {
+            text-align: center;
+            border-right: 1px solid rgba(92, 92, 92, 0.36);
+            padding: 0px 10px 0px 10px;
+        }
+
+        .account {
+            width: 100px;
+        }
+
+        .password {
+            width: 80px;
+        }
+
+        .role {
+            width: 80px;
+        }
+
+        .type {
+            width: 80px;
+        }
+
+        .addr {
+            width: 320px;
+        }
+    </style>
+
 </head>
 <body>
-<H1>hahahahahahaha</H1>
+<button id="findAllAccounts"
+        class="button button-primary button-rounded button-small">
+    获取账号
+</button>
+<button id="show_save_new_account_box"
+        class="button button-primary button-rounded button-small">
+    添加账号
+</button>
+<br/>
+<br/>
+<br/>
+<br/>
+<div id="accounts">
+    <div id="account_head">
+        <div class="table_head"
+             style="width: 100px;">
+            账号
+        </div>
+        <div class="table_head"
+             style="width: 80px;">
+            密码
+        </div>
+        <div class="table_head"
+             style="width: 80px;">
+            角色
+        </div>
+        <div class="table_head"
+             style="width: 80px;">
+            类型
+        </div>
+        <div class="table_head"
+             style="width: 320px;">
+            服务器地址
+        </div>
+    </div>
+    <div id="account_list">
+
+    </div>
+</div>
+<div id="save_new_account_box">
+    <div id="save_new_account">
+        <b id="save_new_account_title">添加账号<span>x</span></b>
+        <br/>
+        账号：<input
+            type="text"
+            class="account_id">
+        <br/>
+        密码：<input
+            type="text"
+            class="account_password">
+        <br/>
+
+        角色：
+        <select
+                class="account_role">
+            <option>
+                trader
+            </option>
+            <option selected="selected">
+                follower
+            </option>
+        </select>
+        <br/>
+
+        类型：
+        <select
+                class="account_type">
+            <option>
+                Demo
+            </option>
+            <option>
+                Real
+            </option>
+        </select>
+        <br/>
+
+        服务器：<input
+            type="text"
+            class="account_addr"
+            placeholder="http://www.fxcorporate.com/Hosts.jsp"
+            disabled="disabled">
+        <br/>
+        <button id="cancle_save_new_account"
+                class="button button-primary button-rounded button-small">
+            取消
+        </button>
+        <button id="confirm_save_new_account"
+                class="button button-primary button-rounded button-small">
+            确定
+        </button>
+    </div>
+</div>
 </body>
 </html>
+<script>
+    $(function () {
+        $("#findAllAccounts").click(findAllAccounts)
+        $("#save_new_account_box").hide()
+        $("#show_save_new_account_box").click(showSaveNewAccountBox)
+        $("#cancle_save_new_account").click(hideSaveNewAccountBox)
+        $("#confirm_save_new_account").click(saveNewAccount)
+        $("#save_new_account_title span").click(hideSaveNewAccountBox)
+        $("#account_list").on("click",".delete_account",deleteAccountById)
+    })
+
+    function deleteAccountById() {
+        var account=$(this).parent().attr("id");
+        if (!confirm("确定要删除 "+account+" 这个账号吗？")) {
+            return;
+        }
+        var url="/account/deleteAccountById.do";
+        var param={
+            "account":account
+        }
+        $.ajax({
+            url:url,
+            data: param,
+            type:"post",
+            dataType:"json",
+            success:function (result) {
+                findAllAccounts();
+                alert(result.data);
+
+            }
+        })
+    }
+    function saveNewAccount() {
+        var url = "/account/saveNewAccount.do";
+        var account = $("#save_new_account .account_id").val();
+        var password = $("#save_new_account .account_password").val();
+        var role = $("#save_new_account .account_role").val();
+        var type = $("#save_new_account .account_type").val();
+
+        var testAccount = (account == null || account == "");
+        var testPassword = (password == null || password == "")
+        if (testAccount) {
+            alert("账号格式不正确！")
+        }
+        if (testPassword) {
+            alert("密码格式不正确！")
+        }
+
+        var param = {
+            "account": account,
+            "password": password,
+            "role": role,
+            "type": type
+        }
+        console.log(url)
+        console.log(account)
+        console.log(password)
+        console.log(role)
+        console.log(type)
+        $.ajax({
+            url:url,
+            data:param,
+            type:"post",
+            dataType: "json",
+            success:function (result) {
+                console.log(result)
+                findAllAccounts();
+
+                alert(result.data)
+            }
+        })
+        if (!testPassword && !testAccount) {
+            hideSaveNewAccountBox();
+        }
+    }
+
+    function hideSaveNewAccountBox() {
+        $("#save_new_account_box").hide()
+    }
+
+    function showSaveNewAccountBox() {
+        $("#save_new_account_box").show()
+        $("#save_new_account .account_id").val("")
+        $("#save_new_account .account_password").val("")
+        $("#save_new_account .account_role").val("follower")
+
+    }
+
+    function findAllAccounts() {
+        var url = "/account/findAllAccounts.do";
+        $.ajax({
+            url: url,
+            dataType: "json",
+            type: "get",
+            success: function (result) {
+                console.log(result)
+                doCreateAccountRows(result.data)
+            }
+        })
+    }
+
+    function doCreateAccountRows(datas) {
+        var table = $("#account_list");
+        table.empty()
+        $.each(datas, function (key, val) {
+            var tr = $("<div class='accounts' id='" + val.fxcmAccount + "'>" +
+                "<div class='account'>" + val.fxcmAccount + "</div>" +
+                "<div class='password'>" + val.fxcmPassword + "</div>" +
+                "<div class='role'>" + val.accountRole + "</div>" +
+                "<div class='type'>" + val.accountType + "</div>" +
+                "<div class='addr'>" + val.hostAddr + "</div>" +
+                "<div class='delete_account'>删除账户</div>" +
+                "</div>")
+            table.append(tr)
+        })
+    }
+</script>

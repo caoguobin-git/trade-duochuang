@@ -75,9 +75,9 @@ header{ width:100%; height:100%; overflow:hidden;}
     width:100%;height:20px;display: block;
 
 }
-/*nav*/
-#left_nav{ width:40px; height:1050px; position:absolute; top:0px; left:0px; z-index:99; overflow:hidden;}
-#leftnav_con{ width:40px; height:1050px; background:#FFFFFF; position:absolute; top:0px; left:-40px;}
+/*!*nav*!*/
+/*#left_nav{ width:40px; height:1050px; position:absolute; top:0px; left:0px; z-index:99; overflow:hidden;}*/
+/*#leftnav_con{ width:40px; height:1050px; background:#FFFFFF; position:absolute; top:0px; left:-40px;}*/
 
 
 
@@ -116,6 +116,7 @@ header{ width:100%; height:100%; overflow:hidden;}
 #create_order{ width:480px; height:360px; padding:20px; background:#FFFFFF; font-size:14px; position:absolute; top:300px; left:50%; margin-left:-240px; z-index:11;}
 #create_order input{ display:inline-block; margin:5px;}
 #create_order p{width:100%; display:block; border-bottom:1px solid #F0F0F0; margin:20px 0px 20px 0px;}
+
 
 #order_title{ width:100%; height:50px; font-size:30px; text-align:center; display:block;}
 #order_title span{ display:inline-block; float:right; text-align:center; font-size:35px;}

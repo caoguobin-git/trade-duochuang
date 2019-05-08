@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.duochuang.mapper.AccountMapper">
+    <select id="findAllAccounts" resultType="com.duochuang.entity.FXCMInfoEntity">
+        select * from fxcm_account
+    </select>
+    <insert id="saveNewAccount">
+        insert into duochuang.fxcm_account (fxcm_account, fxcm_password, account_role, account_type)
+        values (#{account},#{password},#{role},#{type})
+    </insert>
+    <select id="findTrader" resultType="int">
+        select count(*) from fxcm_account fa where account_role='trader'
+    </select>
+    <select id="findAccountByAccount" resultType="int">
+        select count(*) from fxcm_account fa where fxcm_account=#{account}
+    </select>
+    <delete id="deleteAccountById">
+        delete from fxcm_account fa where fxcm_account=#{account}
+    </delete>
+</mapper>
