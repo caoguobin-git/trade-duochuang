@@ -30,7 +30,9 @@ public class AccountServiceImpl implements AccountService {
     public String saveNewAccount(String account, String password, String role, String type) {
         if ("trader".equalsIgnoreCase(role)){
             int a = accountMapper.findTrader();
-            return "管理员已经存在";
+            if(a>0) {
+                return "管理员已经存在";
+            }
         }
         int b =accountMapper.findAccountByAccount(account);
         if (b>0){

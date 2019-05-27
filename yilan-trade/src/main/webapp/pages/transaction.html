@@ -1503,8 +1503,12 @@
         $("#cancle_stop_limit_entry").click(hideStopLimitEntryBox)
         $("#stop_limit_entry_title span").click(hideStopLimitEntryBox)
         $("#confirm_stop_limit_entry").click(sendStopLimitEntryOrder)
-    })
 
+        $("#order_title span").click(hideOrderBox)
+    })
+    function hideOrderBox() {
+        $("#order_box").hide()
+    }
 
     function sendStopLimitEntryOrder() {
         $("#stop_limit_entry_order_box").hide();

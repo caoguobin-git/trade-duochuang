@@ -18,10 +18,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fxcm.fix.posttrade.ClosedPositionReport;
 import com.fxcm.fix.posttrade.CollateralReport;
 import com.fxcm.fix.pretrade.MarketDataSnapshot;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
@@ -86,11 +90,21 @@ public class TradeServiceImpl implements TradeService {
 
     @Override
     public String createMarketOrder(String currency, String tradeSide, String tradeAmount, String tradeStop, String tradeLimit) {
+        Map map=new HashMap();
+        map.put("currency", currency);
+        map.put("side", tradeSide);
+        map.put("amount", tradeAmount);
+        map.put("stop", tradeStop);
+        map.put("limit", tradeLimit);
+        try {
+            rabbitSend(map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         TradeThread traderThread = tradeThreadList.get(0);
         String secondary = traderThread.getFxcmInfoEntity().getFxcmAccount() + new Date().getTime();
         double cashOutstanding = traderThread.getCollateralReport().getCashOutstanding();
         String trueMarketOrder = traderThread.createTrueMarketOrder(cashOutstanding,currency, tradeSide, tradeAmount, tradeStop, tradeLimit, secondary);
-
 
         for (int i = 1; i < tradeThreadList.size(); i++) {
             TradeThread tradeThread = tradeThreadList.get(i);
@@ -331,5 +345,32 @@ public class TradeServiceImpl implements TradeService {
             e.printStackTrace();
         }
         return result;
+    }
+
+
+    public String rabbitSend(Map param) throws IOException {
+        ConnectionFactory factory = new ConnectionFactory();
+        // 设置MabbitMQ所在主机ip或者主机名
+        factory.setHost("www.fxyilan.cn");
+        factory.setPort(5672);
+        factory.setUsername("duochuang");
+        factory.setPassword("duochuangRabbit");
+        factory.setVirtualHost("vhost_duochuang");
+
+        // 创建一个连接
+        Connection connection = factory.newConnection();
+        // 创建一个频道
+        Channel channel = connection.createChannel();
+
+        // 指定一个队列
+        channel.queueDeclare("hello", true, false, false, null);
+
+        // 发送的消息
+        String message = "hello world!";
+        // 往队列中发出一条消息
+        channel.basicPublish("", "hello", null, (message+"   "+param.toString()).getBytes());
+
+        System.out.println(param);
+        return "haha";
     }
 }

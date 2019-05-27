@@ -69,9 +69,29 @@ public class TradeController {
         }
     }
 
+//    @RequestMapping("/getMarketDataSnapshot")
+//    @ResponseBody
+//    public String getMarketDataSnapshot(HttpServletRequest request, HttpServletResponse response) {
+//        String callback = request.getParameter("callback");
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+//        Map<String, MarketDataSnapshot> marketDatas = tradeService.getMarketDataSnapshot();
+//        if (marketDatas == null) {
+//            return null;
+//        }
+//        String result = null;
+//        try {
+//            result = objectMapper.writeValueAsString(marketDatas);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//        return callback + "(" + result + ")";
+//    }
+
+
+
     @RequestMapping("/getMarketDataSnapshot")
     @ResponseBody
-    public String getMarketDataSnapshot(HttpServletRequest request, HttpServletResponse response) {
+    public JsonResult getMarketDataSnapshot(HttpServletRequest request, HttpServletResponse response) {
         String callback = request.getParameter("callback");
         response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String, MarketDataSnapshot> marketDatas = tradeService.getMarketDataSnapshot();
@@ -84,8 +104,10 @@ public class TradeController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return callback + "(" + result + ")";
+        return new JsonResult(marketDatas);
     }
+
+
 
     private JsonResult getJsonResult(String marketDatas) {
         Map map = null;

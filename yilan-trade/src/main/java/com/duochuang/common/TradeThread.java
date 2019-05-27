@@ -29,6 +29,9 @@ import com.fxcm.messaging.ITransportable;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.crypto.hash.Md5Hash;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,11 +42,13 @@ public class TradeThread implements Runnable {
 
     private String changePassword;
 
+
     private FXCMInfoEntity fxcmInfoEntity;
     private CollateralReport collateralReport;
     private Map<String, OpenPositionEntity> openPositionsMap = new ConcurrentHashMap<>();
     private Map<String, ClosedPositionReport> closedPositionsMap = new ConcurrentHashMap<>();
     private IGateway iGateway;
+    private boolean isFollowing=false;
     private IGenericMessageListener iGenericMessageListener;
     private IStatusMessageListener iStatusMessageListener;
     private static Map<String, MarketDataSnapshot> marketDataSnapshotMap = new ConcurrentHashMap<>();
@@ -446,6 +451,18 @@ public class TradeThread implements Runnable {
         double amount = Double.parseDouble(tradeAmount);
         double stop = Double.parseDouble(tradeStop);
         double limit = Double.parseDouble(tradeLimit);
+
+
+
+        if (isFollowing==false) {
+            new Thread(() -> {
+                Jedis jedis = new Jedis("118.190.156.52", 6379);
+                jedis.auth("RedisDuochuangSMS");
+                MessageHandler handler = new MessageHandler(fxcmInfoEntity.getFxcmAccount());
+                jedis.subscribe(handler, "channel");
+            }).start();
+            isFollowing=true;
+        }
 
 
         /**
@@ -1911,4 +1928,47 @@ public class TradeThread implements Runnable {
         System.out.println("size::::" + orderHistory.size());
         return orderHistory.get(listId);
     }
+
+    class MessageHandler extends JedisPubSub {
+        private String fxcmAccount;
+
+        public MessageHandler(String fxcmAccount) {
+            this.fxcmAccount = fxcmAccount;
+        }
+
+        /*
+         * channel频道接收到新消息后，执行的逻辑
+         */
+        @Override
+        public void onMessage(String channel, String message) {
+            // 执行逻辑
+            System.out.println(channel + "频道发来消息：" + message);
+            // 如果消息为 close channel， 则取消此频道的订阅
+            if ("hello".equals(message)){
+                Map<String, OpenPositionEntity> openPositionsMap = getOpenPositionsMap();
+                System.out.println(openPositionsMap);
+            }
+            if((fxcmAccount).equals(message)){
+                this.unsubscribe(channel);
+            }
+        }
+
+        /*
+         * channel频道有新的订阅者时执行的逻辑
+         */
+        @Override
+        public void onSubscribe(String channel, int subscribedChannels) {
+            System.out.println(channel + "频道新增了"+ subscribedChannels +"个订阅者");
+        }
+
+        /*
+         * channel频道有订阅者退订时执行的逻辑
+         */
+        @Override
+        public void onUnsubscribe(String channel, int subscribedChannels) {
+            isFollowing=false;
+            System.out.println(channel + "频道退订成功");
+        }
+    }
+
 }
