@@ -95,10 +95,10 @@ function getMarketDataSnapshot() {
     $.ajax({
         url: url,
         type: "get",
-        dataType: "jsonP",
+        dataType: "json",
         success: function (result) {
             $("#allData").data("marketData", result)
-            doCreatRows(result)
+            doCreatRows(result.data)
         }
     })
 

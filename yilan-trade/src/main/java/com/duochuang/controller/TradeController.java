@@ -104,6 +104,7 @@ public class TradeController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+//        return callback + "(" + result + ")";
         return new JsonResult(marketDatas);
     }
 

@@ -453,16 +453,17 @@ public class TradeThread implements Runnable {
         double limit = Double.parseDouble(tradeLimit);
 
 
-
-        if (isFollowing==false) {
-            new Thread(() -> {
-                Jedis jedis = new Jedis("118.190.156.52", 6379);
-                jedis.auth("RedisDuochuangSMS");
-                MessageHandler handler = new MessageHandler(fxcmInfoEntity.getFxcmAccount());
-                jedis.subscribe(handler, "channel");
-            }).start();
-            isFollowing=true;
-        }
+//
+//        if (isFollowing==false) {
+//            new Thread(() -> {
+//                Jedis jedis = new Jedis("118.190.156.52", 6379);
+//                jedis.auth("RedisDuochuangSMS");
+//                System.out.println("创建了新的线程监听");
+//                MessageHandler handler = new MessageHandler(fxcmInfoEntity.getFxcmAccount());
+//                jedis.subscribe(handler, "channel");
+//            }).start();
+//            isFollowing=true;
+//        }
 
 
         /**
@@ -1929,46 +1930,46 @@ public class TradeThread implements Runnable {
         return orderHistory.get(listId);
     }
 
-    class MessageHandler extends JedisPubSub {
-        private String fxcmAccount;
-
-        public MessageHandler(String fxcmAccount) {
-            this.fxcmAccount = fxcmAccount;
-        }
-
-        /*
-         * channel频道接收到新消息后，执行的逻辑
-         */
-        @Override
-        public void onMessage(String channel, String message) {
-            // 执行逻辑
-            System.out.println(channel + "频道发来消息：" + message);
-            // 如果消息为 close channel， 则取消此频道的订阅
-            if ("hello".equals(message)){
-                Map<String, OpenPositionEntity> openPositionsMap = getOpenPositionsMap();
-                System.out.println(openPositionsMap);
-            }
-            if((fxcmAccount).equals(message)){
-                this.unsubscribe(channel);
-            }
-        }
-
-        /*
-         * channel频道有新的订阅者时执行的逻辑
-         */
-        @Override
-        public void onSubscribe(String channel, int subscribedChannels) {
-            System.out.println(channel + "频道新增了"+ subscribedChannels +"个订阅者");
-        }
-
-        /*
-         * channel频道有订阅者退订时执行的逻辑
-         */
-        @Override
-        public void onUnsubscribe(String channel, int subscribedChannels) {
-            isFollowing=false;
-            System.out.println(channel + "频道退订成功");
-        }
-    }
+//    class MessageHandler extends JedisPubSub {
+//        private String fxcmAccount;
+//
+//        public MessageHandler(String fxcmAccount) {
+//            this.fxcmAccount = fxcmAccount;
+//        }
+//
+//        /*
+//         * channel频道接收到新消息后，执行的逻辑
+//         */
+//        @Override
+//        public void onMessage(String channel, String message) {
+//            // 执行逻辑
+//            System.out.println(channel + "频道发来消息：" + message);
+//            // 如果消息为 close channel， 则取消此频道的订阅
+//            if ("hello".equals(message)){
+//                Map<String, OpenPositionEntity> openPositionsMap = getOpenPositionsMap();
+//                System.out.println(openPositionsMap);
+//            }
+//            if((fxcmAccount).equals(message)){
+//                this.unsubscribe(channel);
+//            }
+//        }
+//
+//        /*
+//         * channel频道有新的订阅者时执行的逻辑
+//         */
+//        @Override
+//        public void onSubscribe(String channel, int subscribedChannels) {
+//            System.out.println(channel + "频道新增了"+ subscribedChannels +"个订阅者");
+//        }
+//
+//        /*
+//         * channel频道有订阅者退订时执行的逻辑
+//         */
+//        @Override
+//        public void onUnsubscribe(String channel, int subscribedChannels) {
+//            isFollowing=false;
+//            System.out.println(channel + "频道退订成功");
+//        }
+//    }
 
 }
